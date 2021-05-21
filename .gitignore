@@ -10,6 +10,7 @@
 # Precompiled Headers
 *.gch
 *.pch
+*.ipch
 
 # Compiled Dynamic libraries
 *.so
@@ -33,3 +34,10 @@
 
 # Logs
 *.tlog
+*.log
+*.pdb
+*.ilk
+*.suo
+*.db
+*.idb
+*.recipe
