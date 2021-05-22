@@ -10,6 +10,7 @@ public:
 	TicTacBoard(unsigned int boardsize);
 	virtual ~TicTacBoard();
 	void Show();
-	void SetCell(unsigned int xpos, unsigned int ypos, CellType ct);
+	void SetCell();
+	bool CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2);
 };
 
