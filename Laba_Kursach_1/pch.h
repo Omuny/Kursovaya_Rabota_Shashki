@@ -8,5 +8,6 @@ using namespace std;
 #include <conio.h>;
 #include <string>
 #include <locale.h>
+#include <cmath>
 
 #endif //PCH_H

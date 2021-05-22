@@ -22,7 +22,7 @@ TicTacBoard::~TicTacBoard()
 void TicTacBoard::Show()
 {
 	cout << "     ";
-	cout << " A B C D E F G H\t\W - Белая шашка, B - черная. V - Белая дамка, P - черная.";
+	cout << " A B C D E F G H\t\W - Белая шашка, B - черная. V - Белая дамка, P - черная. ";
 	cout << endl;
 	cout << endl;
 
@@ -946,5 +946,38 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 
 void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2)
 {
+	CellType type;
+	int a;
+	if(ypos1 > ypos2)
+		a = fmod(ypos1,ypos2);
+	if (ypos1 < ypos2)
+		a = fmod(ypos2, ypos1);
 
+	if ((cells[xpos1][ypos1] == CellType_Black) || (cells[xpos1][ypos1] == CellType_White))
+	{
+		if (a == 1)
+		{
+			type = cells[xpos1][ypos1];
+			cells[xpos1][ypos1] = CellType_Empty;
+			cells[xpos2][ypos2] = type;
+		}
+		if (a == 2)
+		{
+			type = cells[xpos1][ypos1];
+			cells[xpos1][ypos1] = CellType_Empty;
+
+			if (xpos1 > xpos2)
+				if (ypos1 > ypos2)
+					cells[xpos1 - 1][ypos1 - 1] == CellType_Empty;
+				else
+					cells[xpos1 - 1][ypos1 + 1] == CellType_Empty;
+			else
+				if (ypos1 > ypos2)
+					cells[xpos1 + 1][ypos1 - 1] == CellType_Empty;
+				else
+					cells[xpos1 + 1][ypos1 + 1] == CellType_Empty;
+
+			cells[xpos2][ypos2] = type;
+		}
+	}
 }
