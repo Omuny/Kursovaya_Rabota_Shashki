@@ -941,3 +941,8 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	}
 	
 }
+
+void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2)
+{
+
+}
