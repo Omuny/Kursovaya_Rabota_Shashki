@@ -1,16 +1,21 @@
 ﻿// Laba_Kursach_1.cpp
 
 #include "pch.h"
-#include "TicTacBoard.h"
+#include "TicTacManager.h"
 
 int main()
 {
-    setlocale(LC_ALL, "RUS");
-    TicTacBoard* board;
-    board = new TicTacBoard(8);
-    board->SetCell();
-    board->Show();
+    setlocale(LC_ALL, "Russian");
+    TicTacManager manager;
+    if (!manager.Init())
+    {
+        cout << "Неверным данные, выходим...";
+        _getch();
+        return 0;
+    }
+    while (true)
+    {
+        manager.MakeMove();
+    }
     _getch();
-    delete board;
-    return 0;
 }
