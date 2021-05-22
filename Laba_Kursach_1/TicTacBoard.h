@@ -11,7 +11,7 @@ public:
 	virtual ~TicTacBoard();
 	void Show();
 	void SetCell();
-	bool CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2);
+	bool CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type);
 	void CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2);
 };
 

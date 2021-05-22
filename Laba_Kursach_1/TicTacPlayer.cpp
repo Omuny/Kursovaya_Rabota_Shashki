@@ -23,8 +23,8 @@ void TicTacPlayer::SetBoard(TicTacBoard* board)
 bool TicTacPlayer::MakeMove()
 {
 	unsigned int row1, col1, row2, col2;
-	unsigned int a, b, c, d;
-	char a;
+	unsigned int b, d;
+	char a, с;
 	cout << "Игрок " << name << ", ваш ход..." << endl;
 	cout << "Введите параметры шашки, которой вы будете ходить. Пример ввода данных: G4, H7, A2" << endl;
 	cout << "Введите столбец: ";
@@ -64,11 +64,11 @@ bool TicTacPlayer::MakeMove()
 	cout << endl;
 	cout << "Введите координаты хода. Пример ввода данных: G4, H7, A2" << endl;
 	cout << "Введите столбец: ";
-	cin >> c;
+	cin >> с;
 	cout << "Введите строку: ";
 	cin >> d;
 	row2 = 8 - d;
-	switch (c)
+	switch (с)
 	{
 	case 'A':
 		col2 = 0;
@@ -97,7 +97,7 @@ bool TicTacPlayer::MakeMove()
 	default:
 		break;
 	}
-	if (this->board->CkeckLegal(col1, row1, col2, row2)) // проверка
+	if (this->board->CkeckLegal(col1, row1, col2, row2, cellType)) // проверка
 	{
 		this->board->CellMove(col1, row1, col2, row2); // сам ход
 		return true;

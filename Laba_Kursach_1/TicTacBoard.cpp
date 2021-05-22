@@ -78,9 +78,11 @@ void TicTacBoard::SetCell()
 		}
 }
 
-bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2) // проверка возможности хода
+bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type) // проверка возможности хода
 {
 	if (cells[xpos1][ypos2] == CellType_Empty) // Если пытаемся пойти пустой клеткой
+		return false;
+	if (cells[xpos1][ypos1] == Type) // Попытка пойти шашкой не своего цвета
 		return false;
 	if (((ypos2 % 2 == 0) && (xpos2 % 2 == 0)) || ((ypos2 % 2 != 0) && (xpos2 % 2 != 0))) // если поле белое
 		return false;
