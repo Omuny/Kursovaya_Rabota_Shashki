@@ -959,9 +959,9 @@ void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int 
 	int a;
 
 	if(ypos1 > ypos2)
-		a = fmod(ypos1,ypos2); // Находим разницу между строками
+		a = ypos1 - ypos2; // Находим разницу между строками
 	if (ypos1 < ypos2)
-		a = fmod(ypos2, ypos1);
+		a = ypos2 - ypos1;
 
 	if ((cells[xpos1][ypos1] == CellType_Black) || (cells[xpos1][ypos1] == CellType_White))
 	{
@@ -977,15 +977,19 @@ void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int 
 			cells[xpos1][ypos1] = CellType_Empty;
 
 			if (xpos1 > xpos2)
+			{
 				if (ypos1 > ypos2)
-					cells[xpos1 - 1][ypos1 - 1] == CellType_Empty; // если едим в лево вверх
-				else
-					cells[xpos1 - 1][ypos1 + 1] == CellType_Empty; // если едим в право вверх
-			else
+					cells[xpos1 - 1][ypos1 - 1] = CellType_Empty; // если едим в лево вверх
+				if (ypos1 < ypos2)
+					cells[xpos1 - 1][ypos1 + 1] = CellType_Empty; // если едим в право вверх
+			}
+			if (xpos1 < xpos2)
+			{
 				if (ypos1 > ypos2)
-					cells[xpos1 + 1][ypos1 - 1] == CellType_Empty; // если едим в лево вниз
-				else
-					cells[xpos1 + 1][ypos1 + 1] == CellType_Empty; // если едим в право вниз
+					cells[xpos1 + 1][ypos1 - 1] = CellType_Empty; // если едим в лево вниз
+				if (ypos1, ypos2)
+					cells[xpos1 + 1][ypos1 + 1] = CellType_Empty; // если едим в право вниз
+			}
 
 			cells[xpos2][ypos2] = type;
 		}
