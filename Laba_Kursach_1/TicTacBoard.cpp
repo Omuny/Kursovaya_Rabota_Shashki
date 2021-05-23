@@ -21,6 +21,7 @@ TicTacBoard::~TicTacBoard()
 
 void TicTacBoard::Show()
 {
+	cout << endl;
 	cout << "     ";
 	cout << " A B C D E F G H\t\W - Белая шашка, B - черная. V - Белая дамка, P - черная. ";
 	cout << endl;
@@ -56,6 +57,7 @@ void TicTacBoard::Show()
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void TicTacBoard::SetCell()
@@ -80,9 +82,9 @@ void TicTacBoard::SetCell()
 
 bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type) // проверка возможности хода
 {
-	if (cells[xpos1][ypos2] == CellType_Empty) // Если пытаемся пойти пустой клеткой
+	if (cells[xpos1][ypos1] == CellType_Empty) // Если пытаемся пойти пустой клеткой
 		return false;
-	if (cells[xpos1][ypos1] == Type) // Попытка пойти шашкой не своего цвета
+	if (cells[xpos1][ypos1] != Type) // Попытка пойти шашкой не своего цвета
 		return false;
 	if (((ypos2 % 2 == 0) && (xpos2 % 2 == 0)) || ((ypos2 % 2 != 0) && (xpos2 % 2 != 0))) // если поле белое
 		return false;
@@ -929,15 +931,15 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 
 	if (a == 1) // Обычный ход белой шашки
 	{
-		if ((ypos2 < ypos1) || (ypos2 == ypos1 - 1))
-			if ((xpos2 == xpos1 - 1) || (xpos2 == xpos1 + 1))
+		if ((xpos2 < xpos1) || (xpos2 == xpos1 - 1))
+			if ((ypos2 == ypos1 - 1) || (ypos2 == ypos1 + 1))
 				return true;
 		return false;
 	}
 	if (a == 2) // Обычный ход черной шашки
 	{
-		if ((ypos2 > ypos1) || (ypos2 == ypos1 + 1))
-			if ((xpos2 == xpos1 - 1) || (xpos2 == xpos1 + 1))
+		if ((xpos2 > xpos1) || (xpos2 == xpos1 + 1))
+			if ((ypos2 == ypos1 - 1) || (ypos2 == ypos1 + 1))
 				return true;
 		return false;
 	}

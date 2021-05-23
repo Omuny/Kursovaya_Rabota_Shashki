@@ -97,9 +97,9 @@ bool TicTacPlayer::MakeMove()
 	default:
 		break;
 	}
-	if (this->board->CkeckLegal(col1, row1, col2, row2, cellType)) // проверка
+	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType)) // проверка
 	{
-		this->board->CellMove(col1, row1, col2, row2); // сам ход
+		this->board->CellMove(row1, col1, row2, col2); // сам ход
 		return true;
 	}
 	return false;

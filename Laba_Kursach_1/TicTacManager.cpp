@@ -30,9 +30,9 @@ bool TicTacManager::Init()
 	cout << "¬ведите им€ игрока, играющего черными: ";
 	getline(cin, playerName);
 	player2->SetupPlayer(playerName, CellType_Black);
-
 	player1->SetBoard(this->board);
 	player2->SetBoard(this->board);
+	board->SetCell();
 	currentPlayer = player1;
 
 	return true;
