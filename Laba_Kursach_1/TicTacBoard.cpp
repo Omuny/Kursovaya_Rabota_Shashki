@@ -82,6 +82,8 @@ void TicTacBoard::SetCell()
 
 bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type) // проверка возможности хода
 {
+	/* !!!!! Внимание. Важно! Я перепутал местами xpos и ypos, поэтому теперь xpos отвечает за строки, а ypos отвечает за столбцы !!!!! */
+
 	if (cells[xpos1][ypos1] == CellType_Empty) // Если пытаемся пойти пустой клеткой
 		return false;
 	if (cells[xpos1][ypos1] != Type) // Попытка пойти шашкой не своего цвета
@@ -110,14 +112,14 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	switch (a) // проверка край доски
 	{
 	case 1:
-		if (ypos1 == 0)
+		if (xpos1 == 0)
 		{
 			cout << "Ход этой шашкой не возможен" << endl;
 			return false;
 		}
 		break;
 	case 2:
-		if (ypos1 == 7)
+		if (xpos1 == 7)
 		{
 			cout << "Ход этой шашкой не возможен" << endl;
 			return false;
@@ -126,6 +128,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	default:
 		break;
 	}
+
 	// Проверка на возможность съесть другую шашку
 	switch (a) // проверка возможности съесть
 	{
@@ -166,9 +169,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в правом верхнем углу
+			if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в левом нижнем углу
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -183,9 +186,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в левом нижнем углу
+			if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в правом верхнем углу
 			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой нижней клетки
 				{
 					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 					{
@@ -200,9 +203,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (ypos1 == 0) // Верхние две клетки
+			if (xpos1 == 7) // Нижние две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -212,6 +215,35 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					}
 					if (cells[xpos1 - 2][ypos1 + 2] != CellType_Empty)
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
+							return false;
+				}
+				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
+				{
+					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (xpos1 == 0) // Верхние две клетки
+			{
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 							return false;
 				}
 				if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
@@ -229,50 +261,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (ypos1 == 7) // Нижние две клетки
+			if (ypos1 == 0) // Левые две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (xpos1 == 0) // Левые две клетки
-			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
+				if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -284,12 +275,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
 							return false;
 				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (xpos1 == 7) // Правые две клетки
-			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -299,6 +285,23 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					}
 					if (cells[xpos1 - 2][ypos1 + 2] != CellType_Empty)
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (ypos1 == 7) // Правые две клетки
+			{
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 							return false;
 				}
 				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
@@ -319,9 +322,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 		}
 		if (xpos1 == 1 || ypos1 == 1 || xpos1 == 6 || ypos1 == 6) //Серединный квадрат
 		{
-			if ((xpos1 == 6) && (ypos1 == 1)) // Верхняя правая угловая клетка
+			if ((xpos1 == 6) && (ypos1 == 1)) // Нижняя левая угловая клетка
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -336,9 +339,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if ((xpos1 == 1) && (ypos1 == 6)) // Нижняя левая угловая клетка
+			if ((xpos1 == 1) && (ypos1 == 6)) // Верхняя правая угловая клетка 
 			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
 				{
 					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 					{
@@ -353,9 +356,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (ypos1 == 1) // Верхние две клетки
+			if (ypos1 == 1) // Левые две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -365,64 +368,6 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					}
 					if (cells[xpos1 - 2][ypos1 + 2] != CellType_Empty)
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
-							return false;
-				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (ypos1 == 6) // Нижние две клетки
-			{
-				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (xpos1 == 1) // Левые две клетки
-			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 							return false;
 				}
 				if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
@@ -440,9 +385,67 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (xpos1 == 6) // Правые две клетки
+			if (ypos1 == 6) // Правые две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
+				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
+				{
+					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (xpos1 == 1) // Верхние две клетки
+			{
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (xpos1 == 6) // Нижние две клетки
+			{
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -454,7 +457,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
 							return false;
 				}
-				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
+				if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 					{
@@ -497,7 +500,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
 						return false;
 			}
-			if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
+			if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
 			{
 				if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 				{
@@ -509,7 +512,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 						return false;
 			}
-			if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
+			if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой верхней клетки
 			{
 				if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 				{
@@ -525,6 +528,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				return false;
 		} 
 		break;
+
 	case 2: // черная шашка
 		if (xpos1 == 0 || ypos1 == 0 || xpos1 == 7 || ypos1 == 7) // Внешний квадрат
 		{
@@ -562,9 +566,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в правом верхнем углу
+			if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в левом нижнем углу
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -579,9 +583,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в левом нижнем углу
+			if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в правом верхнем углу
 			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой нижней клетки
 				{
 					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 					{
@@ -596,9 +600,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (ypos1 == 0) // Верхние две клетки
+			if (xpos1 == 7) // Нижние две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -608,6 +612,35 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					}
 					if (cells[xpos1 - 2][ypos1 + 2] != CellType_Empty)
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
+							return false;
+				}
+				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
+				{
+					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (xpos1 == 0) // Верхние две клетки
+			{
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 							return false;
 				}
 				if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
@@ -625,50 +658,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (ypos1 == 7) // Нижние две клетки
+			if (ypos1 == 0) // Левые две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (xpos1 == 0) // Левые две клетки
-			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
+				if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -680,12 +672,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
 							return false;
 				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (xpos1 == 7) // Правые две клетки
-			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -695,6 +682,23 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					}
 					if (cells[xpos1 - 2][ypos1 + 2] != CellType_Empty)
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (ypos1 == 7) // Правые две клетки
+			{
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 							return false;
 				}
 				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
@@ -715,9 +719,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 		}
 		if (xpos1 == 1 || ypos1 == 1 || xpos1 == 6 || ypos1 == 6) //Серединный квадрат
 		{
-			if ((xpos1 == 6) && (ypos1 == 1)) // Верхняя правая угловая клетка
+			if ((xpos1 == 6) && (ypos1 == 1)) // Нижняя левая угловая клетка
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -732,9 +736,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if ((xpos1 == 1) && (ypos1 == 6)) // Нижняя левая угловая клетка
+			if ((xpos1 == 1) && (ypos1 == 6)) // Верхняя правая угловая клетка 
 			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
 				{
 					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 					{
@@ -749,9 +753,9 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (ypos1 == 1) // Верхние две клетки
+			if (ypos1 == 1) // Левые две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -761,64 +765,6 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					}
 					if (cells[xpos1 - 2][ypos1 + 2] != CellType_Empty)
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
-							return false;
-				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (ypos1 == 6) // Нижние две клетки
-			{
-				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return false;
-				}
-				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
-					return false;
-			}
-			if (xpos1 == 1) // Левые две клетки
-			{
-				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
-				{
-					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-					{
-						EatApportunity = true;
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
-							return true;
-					}
-					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
-						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 							return false;
 				}
 				if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
@@ -836,9 +782,67 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
 					return false;
 			}
-			if (xpos1 == 6) // Правые две клетки
+			if (ypos1 == 6) // Правые две клетки
 			{
-				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
+				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
+				{
+					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 - 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (xpos1 == 1) // Верхние две клетки
+			{
+				if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 - 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
+							return false;
+				}
+				if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
+				{
+					if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
+					{
+						EatApportunity = true;
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
+							return true;
+					}
+					if (cells[xpos1 + 2][ypos1 + 2] != CellType_Empty)
+						if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2))
+							return false;
+				}
+				if (EatApportunity == true) // Если не съели ни одну шашку, при возможности, то неверный ход
+					return false;
+			}
+			if (xpos1 == 6) // Нижние две клетки
+			{
+				if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 					{
@@ -850,7 +854,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 						if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2))
 							return false;
 				}
-				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
+				if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
 				{
 					if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 					{
@@ -893,7 +897,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2))
 						return false;
 			}
-			if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
+			if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
 			{
 				if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 				{
@@ -905,7 +909,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2))
 						return false;
 			}
-			if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
+			if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой верхней клетки
 			{
 				if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 				{
@@ -921,10 +925,13 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				return false;
 		}
 		break;
+
 	case 3: // белая дамка
 		break;
+
 	case 4: // черная дамка
 		break;
+
 	default:
 		break;;
 	}
@@ -950,34 +957,35 @@ void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int 
 {
 	CellType type;
 	int a;
+
 	if(ypos1 > ypos2)
-		a = fmod(ypos1,ypos2);
+		a = fmod(ypos1,ypos2); // Находим разницу между строками
 	if (ypos1 < ypos2)
 		a = fmod(ypos2, ypos1);
 
 	if ((cells[xpos1][ypos1] == CellType_Black) || (cells[xpos1][ypos1] == CellType_White))
 	{
-		if (a == 1)
+		if (a == 1) // если обычный ход
 		{
 			type = cells[xpos1][ypos1];
 			cells[xpos1][ypos1] = CellType_Empty;
 			cells[xpos2][ypos2] = type;
 		}
-		if (a == 2)
+		if (a == 2) // если съедаем шашку
 		{
 			type = cells[xpos1][ypos1];
 			cells[xpos1][ypos1] = CellType_Empty;
 
 			if (xpos1 > xpos2)
 				if (ypos1 > ypos2)
-					cells[xpos1 - 1][ypos1 - 1] == CellType_Empty;
+					cells[xpos1 - 1][ypos1 - 1] == CellType_Empty; // если едим в лево вверх
 				else
-					cells[xpos1 - 1][ypos1 + 1] == CellType_Empty;
+					cells[xpos1 - 1][ypos1 + 1] == CellType_Empty; // если едим в право вверх
 			else
 				if (ypos1 > ypos2)
-					cells[xpos1 + 1][ypos1 - 1] == CellType_Empty;
+					cells[xpos1 + 1][ypos1 - 1] == CellType_Empty; // если едим в лево вниз
 				else
-					cells[xpos1 + 1][ypos1 + 1] == CellType_Empty;
+					cells[xpos1 + 1][ypos1 + 1] == CellType_Empty; // если едим в право вниз
 
 			cells[xpos2][ypos2] = type;
 		}
