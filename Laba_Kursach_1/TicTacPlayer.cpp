@@ -32,6 +32,7 @@ bool TicTacPlayer::MakeMove()
 	cout << "Введите строку: ";
 	cin >> b;
 	row1 = 8 - b;
+	// Проверка буквы большого регистра
 	switch (a)
 	{
 	case 'A':
@@ -61,6 +62,37 @@ bool TicTacPlayer::MakeMove()
 	default:
 		break;
 	}
+	// Проверка буквы маленького регистра
+	switch (a)
+	{
+	case 'a':
+		col1 = 0;
+		break;
+	case 'b':
+		col1 = 1;
+		break;
+	case 'c':
+		col1 = 2;
+		break;
+	case 'd':
+		col1 = 3;
+		break;
+	case 'e':
+		col1 = 4;
+		break;
+	case 'f':
+		col1 = 5;
+		break;
+	case 'g':
+		col1 = 6;
+		break;
+	case 'h':
+		col1 = 7;
+		break;
+	default:
+		break;
+	}
+
 	cout << endl;
 	cout << "Введите координаты хода. Пример ввода данных: G4, H7, A2" << endl;
 	cout << "Введите столбец: ";
@@ -68,6 +100,7 @@ bool TicTacPlayer::MakeMove()
 	cout << "Введите строку: ";
 	cin >> d;
 	row2 = 8 - d;
+	// Проверка буквы большого регистра
 	switch (с)
 	{
 	case 'A':
@@ -97,6 +130,37 @@ bool TicTacPlayer::MakeMove()
 	default:
 		break;
 	}
+	// Проверка буквы маленького регистра
+	switch (с)
+	{
+	case 'a':
+		col2 = 0;
+		break;
+	case 'b':
+		col2 = 1;
+		break;
+	case 'c':
+		col2 = 2;
+		break;
+	case 'd':
+		col2 = 3;
+		break;
+	case 'e':
+		col2 = 4;
+		break;
+	case 'f':
+		col2 = 5;
+		break;
+	case 'g':
+		col2 = 6;
+		break;
+	case 'h':
+		col2 = 7;
+		break;
+	default:
+		break;
+	}
+
 	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType)) // проверка
 	{
 		this->board->CellMove(row1, col1, row2, col2); // сам ход
