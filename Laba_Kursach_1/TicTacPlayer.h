@@ -6,12 +6,13 @@ private:
 	TicTacBoard* board;
 	CellType cellType;
 	string name;
+	bool EatOpp = false;
 public:
 	TicTacPlayer();
 	virtual ~TicTacPlayer();
 	void SetupPlayer(string name, CellType cellType);
 	void SetBoard(TicTacBoard* board);
-	bool MakeMove();
+	int MakeMove();
 	string GetName();
 };
 

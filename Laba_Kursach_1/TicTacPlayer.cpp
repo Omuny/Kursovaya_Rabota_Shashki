@@ -20,7 +20,7 @@ void TicTacPlayer::SetBoard(TicTacBoard* board)
 	this->board = board;
 }
 
-bool TicTacPlayer::MakeMove()
+int TicTacPlayer::MakeMove()
 {
 	unsigned int row1, col1, row2, col2;
 	unsigned int b, d;
@@ -161,12 +161,18 @@ bool TicTacPlayer::MakeMove()
 		break;
 	}
 
-	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType)) // проверка
+	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp)) // проверка на возможность хода
 	{
-		this->board->CellMove(row1, col1, row2, col2); // сам ход
-		return true;
+		this->board->CellMove(row1, col1, row2, col2, EatOpp); // сам ход
+		if(EatOpp == true)
+			this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp); // дополнительная проверка на возможность съесть еще одну шашку
+
+		if (EatOpp == false)
+			return 1;
+		if (EatOpp == true)
+			return 2;
 	}
-	return false;
+	return 0;
 }
 
 string TicTacPlayer::GetName()

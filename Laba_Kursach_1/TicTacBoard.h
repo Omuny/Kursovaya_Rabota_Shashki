@@ -4,14 +4,15 @@
 class TicTacBoard
 {
 private:
-	unsigned int boardsize;
+	int boardsize;
 	CellType** cells;
+	bool CheckHod = false;
 public:
 	TicTacBoard(unsigned int boardsize);
 	virtual ~TicTacBoard();
 	void Show();
 	void SetCell();
-	bool CkeckLegal(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, CellType Type);
-	void CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2);
+	bool CkeckLegal(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, CellType Type, bool EatOpp);
+	void CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, bool EatOpp);
 };
 

@@ -45,11 +45,20 @@ void TicTacManager::ShowBoard()
 
 void TicTacManager::MakeMove()
 {
+	int possible;
 	ShowBoard();
-	while (!currentPlayer->MakeMove())
+
+	Here: // Лейбл для перехода
+	possible = currentPlayer->MakeMove();
+	while (!possible)
 	{
 		cout << "Недопустимый ход, попробуйте еще раз" << endl;
 		ShowBoard();
+		goto Here; // Переход отсюда
 	}
-	currentPlayer = (currentPlayer == player1) ? player2 : player1;
+	if (possible == 2)
+		goto Here;
+
+	if (possible == 1)
+		currentPlayer = (currentPlayer == player1) ? player2 : player1;
 }
