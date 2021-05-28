@@ -81,9 +81,61 @@ void TicTacBoard::SetCell()
 		}
 }
 
+void TicTacBoard::CheckPP(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть ++
+{
+	if (cells[xpos1 + 1][ypos1 + 1] != Type && cells[xpos1 + 1][ypos1 + 1] != (Type + 2) && cells[xpos1 + 1][ypos1 + 1] != CellType_Empty) // Проверка правой нижней клетки
+	{
+		if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
+		{
+			EatApportunity = true;
+			if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+				EatOrNot = true;
+		}
+	}
+}
 
+void TicTacBoard::CheckMM(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть --
+{
+	if (cells[xpos1 - 1][ypos1 - 1] != Type && cells[xpos1 - 1][ypos1 - 1] != (Type + 2) && cells[xpos1 - 1][ypos1 - 1] != CellType_Empty) // Проверка левой верхней клетки
+	{
+		if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
+		{
+			EatApportunity = true;
+			if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+				EatOrNot = true;
+		}
+	}
+}
 
+void TicTacBoard::CheckPM(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть +-
+{
+	if (cells[xpos1 + 1][ypos1 - 1] != Type && cells[xpos1 + 1][ypos1 - 1] != (Type + 2) && cells[xpos1 + 1][ypos1 - 1] != CellType_Empty) // Проверка левой нижней клетки
+	{
+		if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
+		{
+			EatApportunity = true;
+			if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+				EatOrNot = true;
+		}
+	}
+}
 
+void TicTacBoard::CheckMP(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть -+
+{
+	if (cells[xpos1 - 1][ypos1 + 1] != Type && cells[xpos1 - 1][ypos1 + 1] != (Type + 2) && cells[xpos1 - 1][ypos1 + 1] != CellType_Empty) // Проверка правой верхней клетки
+	{
+		if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
+		{
+			EatApportunity = true;
+			if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+				EatOrNot = true;
+		}
+	}
+}
 
 
 bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type, bool& EatOpp) // проверка возможности хода
@@ -103,24 +155,6 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	if ((xpos2 == xpos1) && (ypos2 == ypos1)) // попытка пойти на ту же клетку
 		return false;
 
-	switch (Type) // проверка края доски
-	{
-	case CellType_White:
-		if (xpos1 == 0)
-		{
-
-		}
-		break;
-	case CellType_Black:
-		if (xpos1 == 7)
-		{
-
-		}
-		break;
-	default:
-		break;
-	}
-
 	bool EatApportunity = false; // Возможность съесть шашку
 	bool EatOrNot = false; // Съели при возможности или нет
 	unsigned int SaveXpos1, SaveYpos1;
@@ -132,599 +166,90 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	{
 		for (ypos1 = 0; ypos1 < boardsize; ypos1++)
 		{
-			if (cells[xpos1][ypos1] == Type || cells[xpos1][ypos1] == (Type + 2)) // Проверка шашек только цвета текущего игрока
+			if (cells[xpos1][ypos1] == Type) // Проверка обычных шашек только цвета текущего игрока
 			{
 
-				// Проверка на возможность съесть другую шашку
-				switch (cells[xpos1][ypos1]) // проверка возможности съесть
+				 // Внешний квадрат
+				if (xpos1 == 0 || ypos1 == 0 || xpos1 == 7 || ypos1 == 7)
 				{
-				case CellType_White: //белая шашка
-					if (xpos1 == 0 || ypos1 == 0 || xpos1 == 7 || ypos1 == 7) // Внешний квадрат
-					{
-						if ((xpos1 == 0) && (ypos1 == 1) || (xpos1 == 1) && (ypos1 == 0)) // Две клетки в левом верхнем углу
-						{
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 6) && (ypos1 == 7) || (xpos1 == 7) && (ypos1 == 6)) // Две клетки в правом нижнем углу
-						{
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в левом нижнем углу
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в правом верхнем углу
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 7) // Нижние две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 0) // Верхние две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 0) // Левые две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 7) // Правые две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-					}
-					if (xpos1 == 1 || ypos1 == 1 || xpos1 == 6 || ypos1 == 6) //Серединный квадрат
-					{
-						if ((xpos1 == 6) && (ypos1 == 1)) // Нижняя левая угловая клетка
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 1) && (ypos1 == 6)) // Верхняя правая угловая клетка 
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 1) // Левые две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 6) // Правые две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 1) // Верхние две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 6) // Нижние две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
+					if ((xpos1 == 0) && (ypos1 == 1) || (xpos1 == 1) && (ypos1 == 0)) // Две клетки в левом верхнем углу
+						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 
-					}
-					else // Центральный квадрат
+					if ((xpos1 == 6) && (ypos1 == 7) || (xpos1 == 7) && (ypos1 == 6)) // Две клетки в правом нижнем углу
+						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
+
+					if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в левом нижнем углу
+						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
+
+					if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в правом верхнем углу
+						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+
+					if (xpos1 == 7) // Нижние две клетки
 					{
-						if (cells[xpos1 + 1][ypos1 + 1] == CellType_Black || cells[xpos1 + 1][ypos1 + 1] == CellType_Black_King) // Проверка правой нижней клетки
-						{
-							if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
-						if (cells[xpos1 - 1][ypos1 - 1] == CellType_Black || cells[xpos1 - 1][ypos1 - 1] == CellType_Black_King) // Проверка левой верхнней клетки клетки
-						{
-							if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
-						if (cells[xpos1 + 1][ypos1 - 1] == CellType_Black || cells[xpos1 + 1][ypos1 - 1] == CellType_Black_King) // Проверка левой нижней клетки
-						{
-							if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
-						if (cells[xpos1 - 1][ypos1 + 1] == CellType_Black || cells[xpos1 - 1][ypos1 + 1] == CellType_Black_King) // Проверка правой верхней клетки
-						{
-							if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
+						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
+						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
 					}
-					break;
-
-				case CellType_Black: // черная шашка
-					if (xpos1 == 0 || ypos1 == 0 || xpos1 == 7 || ypos1 == 7) // Внешний квадрат
+					if (xpos1 == 0) // Верхние две клетки
 					{
-						if ((xpos1 == 0) && (ypos1 == 1) || (xpos1 == 1) && (ypos1 == 0)) // Две клетки в левом верхнем углу
-						{
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 6) && (ypos1 == 7) || (xpos1 == 7) && (ypos1 == 6)) // Две клетки в правом нижнем углу
-						{
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 7) && (ypos1 == 0)) // Клетка в левом нижнем углу
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в правом верхнем углу
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 7) // Нижние две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 0) // Верхние две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 0) // Левые две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 7) // Правые две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
+						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 					}
-					if (xpos1 == 1 || ypos1 == 1 || xpos1 == 6 || ypos1 == 6) //Серединный квадрат
+					if (ypos1 == 0) // Левые две клетки
 					{
-						if ((xpos1 == 6) && (ypos1 == 1)) // Нижняя левая угловая клетка
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if ((xpos1 == 1) && (ypos1 == 6)) // Верхняя правая угловая клетка 
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 1) // Левые две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (ypos1 == 6) // Правые две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 1) // Верхние две клетки
-						{
-							if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
-							{
-								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-						if (xpos1 == 6) // Нижние две клетки
-						{
-							if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-							if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхней клетки
-							{
-								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-								{
-									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-										EatOrNot = true;
-								}
-							}
-						}
-
+						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
+						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
 					}
-					else // Центральный квадрат
+					if (ypos1 == 7) // Правые две клетки
 					{
-						if (cells[xpos1 + 1][ypos1 + 1] == CellType_White || cells[xpos1 + 1][ypos1 + 1] == CellType_White_King) // Проверка правой нижней клетки
-						{
-							if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
-						if (cells[xpos1 - 1][ypos1 - 1] == CellType_White || cells[xpos1 - 1][ypos1 - 1] == CellType_White_King) // Проверка левой верхнней клетки клетки
-						{
-							if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
-						if (cells[xpos1 + 1][ypos1 - 1] == CellType_White || cells[xpos1 + 1][ypos1 - 1] == CellType_White_King) // Проверка левой нижней клетки
-						{
-							if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
-						if (cells[xpos1 - 1][ypos1 + 1] == CellType_White || cells[xpos1 - 1][ypos1 + 1] == CellType_White_King) // Проверка правой верхней клетки
-						{
-							if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
-							{
-								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
-									EatOrNot = true;
-							}
-						}
+						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
 					}
-					break;
-
-				case 3: // белая дамка
-					break;
-
-				case 4: // черная дамка
-					break;
-
-				default:
-					break;;
 				}
+
+				//Серединный квадрат
+				if (xpos1 == 1 || ypos1 == 1 || xpos1 == 6 || ypos1 == 6) 
+				{
+					if ((xpos1 == 6) && (ypos1 == 1)) // Нижняя левая угловая клетка
+						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
+
+					if ((xpos1 == 1) && (ypos1 == 6)) // Верхняя правая угловая клетка 
+						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+
+					if (ypos1 == 1) // Левые две клетки
+					{
+						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
+						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
+					}
+					if (ypos1 == 6) // Правые две клетки
+					{
+						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
+					}
+					if (xpos1 == 1) // Верхние две клетки
+					{
+						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
+						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+					}
+					if (xpos1 == 6) // Нижние две клетки
+					{
+						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
+						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
+					}
+				}
+
+				// Центральный квадрат
+				else
+				{
+					CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
+					CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
+					CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
+					CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
+				}
+			}
+
+			if (cells[xpos1][ypos1] == (Type + 2)) // Проверка дамки цвета игрока
+			{
+
 			}
 		}
 	}
