@@ -50,15 +50,21 @@ void TicTacManager::MakeMove()
 
 	Here: // Лейбл для перехода
 	possible = currentPlayer->MakeMove();
-	while (!possible)
+
+	if(possible == 0) // проверка правильности хода
 	{
 		cout << "Недопустимый ход, попробуйте еще раз" << endl;
 		ShowBoard();
 		goto Here; // Переход отсюда
 	}
-	if (possible == 2)
-		goto Here;
 
-	if (possible == 1)
+	if (possible == 2) // если можно съесть еще раз
+	{
+		cout << "Вы обязанны есть еще раз" << endl;
+		ShowBoard();
+		goto Here; // Переход отсюда
+	}
+
+	if (possible == 1) // если есть больше нельзя
 		currentPlayer = (currentPlayer == player1) ? player2 : player1;
 }

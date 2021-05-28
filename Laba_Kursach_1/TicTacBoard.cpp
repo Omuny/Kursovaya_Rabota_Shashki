@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "TicTacBoard.h"
+#include "TicTacPlayer.h"
 
 TicTacBoard::TicTacBoard(unsigned int size)
 {
@@ -80,24 +81,29 @@ void TicTacBoard::SetCell()
 		}
 }
 
-bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type, bool EatOpp) // проверка возможности хода
+
+
+
+
+
+bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type, bool& EatOpp) // проверка возможности хода
 {
 	/* !!!!! Внимание. Важно! Я перепутал местами xpos и ypos, поэтому теперь xpos отвечает за строки, а ypos отвечает за столбцы !!!!! */
 
-	if (cells[xpos1][ypos1] == CellType_Empty) // Если пытаемся пойти пустой клеткой
-		return false;
-	if (cells[xpos1][ypos1] != Type) // Попытка пойти шашкой не своего цвета
+	if ((xpos2 < 0) || (xpos2 > boardsize) || (ypos2 < 0) || (ypos2 > boardsize)) // если выходим за пределы доски
 		return false;
 	if (((ypos2 % 2 == 0) && (xpos2 % 2 == 0)) || ((ypos2 % 2 != 0) && (xpos2 % 2 != 0))) // если поле белое
 		return false;
-	if ((xpos2 < 0) || (xpos2 > boardsize) || (ypos2 < 0) || (ypos2 > boardsize)) // если выходим за пределы доски
+	if (cells[xpos1][ypos1] == CellType_Empty) // Если пытаемся пойти пустой клеткой
 		return false;
 	if (cells[xpos2][ypos2] != CellType_Empty) // если на клетке есть другая шашка
+		return false;
+	if (cells[xpos1][ypos1] != Type && cells[xpos1][ypos1] != (Type + 2)) // Попытка пойти шашкой не своего цвета
 		return false;
 	if ((xpos2 == xpos1) && (ypos2 == ypos1)) // попытка пойти на ту же клетку
 		return false;
 
-	switch (Type) // проверка край доски
+	switch (Type) // проверка края доски
 	{
 	case CellType_White:
 		if (xpos1 == 0)
@@ -126,12 +132,11 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	{
 		for (ypos1 = 0; ypos1 < boardsize; ypos1++)
 		{
-			if (cells[xpos1][ypos1] != CellType_Empty) // Не пытаться пойти пустой клеткой
+			if (cells[xpos1][ypos1] == Type || cells[xpos1][ypos1] == (Type + 2)) // Проверка шашек только цвета текущего игрока
 			{
-				/*ДОПОЛНИТЬ КОД ТУТ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 
 				// Проверка на возможность съесть другую шашку
-				switch (Type) // проверка возможности съесть
+				switch (cells[xpos1][ypos1]) // проверка возможности съесть
 				{
 				case CellType_White: //белая шашка
 					if (xpos1 == 0 || ypos1 == 0 || xpos1 == 7 || ypos1 == 7) // Внешний квадрат
@@ -143,7 +148,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -155,7 +160,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -167,7 +172,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -179,7 +184,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -191,7 +196,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -200,7 +205,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -212,7 +217,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -221,7 +226,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -233,7 +238,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -242,7 +247,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -254,7 +259,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -263,7 +268,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -278,7 +283,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -290,7 +295,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -302,7 +307,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -311,7 +316,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -323,7 +328,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -332,7 +337,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -344,7 +349,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -353,7 +358,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -365,7 +370,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -374,7 +379,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -388,7 +393,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -397,7 +402,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -406,7 +411,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -415,7 +420,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -432,7 +437,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -444,7 +449,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -456,7 +461,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -468,7 +473,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -480,7 +485,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -489,7 +494,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -501,7 +506,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -510,7 +515,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -522,7 +527,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -531,7 +536,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -543,7 +548,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -552,7 +557,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -567,7 +572,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -579,7 +584,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -591,7 +596,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -600,7 +605,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -612,7 +617,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -621,7 +626,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -633,7 +638,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -642,7 +647,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -654,7 +659,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -663,7 +668,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 								if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 								{
 									EatApportunity = true;
-									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+									if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 										EatOrNot = true;
 								}
 							}
@@ -677,7 +682,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -686,7 +691,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -695,7 +700,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -704,7 +709,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 							if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 							{
 								EatApportunity = true;
-								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos2 == SaveXpos1) && (ypos2 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+								if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
 									EatOrNot = true;
 							}
 						}
@@ -735,6 +740,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 		if ((EatApportunity == true) && (EatOrNot == false)) // если не съели при возможности
 			return false;
 	}
+
 	if (this->CheckHod == true)
 	{
 		CheckHod = false;
@@ -757,7 +763,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 	}
 }
 
-void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, bool EatOpp)
+void TicTacBoard::CellMove(unsigned int& xpos1, unsigned int& ypos1, unsigned int& xpos2, unsigned int& ypos2, bool& EatOpp)
 {
 	CellType type;
 
@@ -790,14 +796,14 @@ void TicTacBoard::CellMove(unsigned int xpos1, unsigned int ypos1, unsigned int 
 			}
 
 			cells[xpos2][ypos2] = type;
-		}
 
-		this->CheckHod = true; // для повторной проверки
-		unsigned int SaveX = xpos1;
-		unsigned int SaveY = ypos1;
-		xpos1 = xpos2;
-		ypos1 = ypos2;
-		xpos2 = SaveX;
-		ypos2 = SaveY;
+			this->CheckHod = true; // для повторной проверки
+			unsigned int SaveX = xpos1;
+			unsigned int SaveY = ypos1;
+			xpos1 = xpos2;
+			ypos1 = ypos2;
+			xpos2 = SaveX;
+			ypos2 = SaveY;
+		}
 	}
 }
