@@ -238,7 +238,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				}
 
 				// Центральный квадрат
-				else
+				if (((1 < xpos1) && (xpos1 < 6)) && ((1 < ypos1) && (ypos1 < 6)))
 				{
 					CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 					CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
