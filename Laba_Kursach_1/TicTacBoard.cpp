@@ -184,22 +184,22 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					if ((xpos1 == 0) && (ypos1 == 7)) // Клетка в правом верхнем углу
 						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
 
-					if (xpos1 == 7) // Нижние две клетки
+					if ((xpos1 == 7) && (ypos1 == 2 || ypos1 == 4)) // Нижние две клетки
 					{
 						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
 						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
 					}
-					if (xpos1 == 0) // Верхние две клетки
+					if ((xpos1 == 0) && (ypos1 == 3 || ypos1 == 5)) // Верхние две клетки
 					{
 						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
 						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 					}
-					if (ypos1 == 0) // Левые две клетки
+					if ((ypos1 == 0) && (xpos1 == 3 || xpos1 == 5)) // Левые две клетки
 					{
 						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
 					}
-					if (ypos1 == 7) // Правые две клетки
+					if (ypos1 == 7 && (xpos1 == 2 || xpos1 == 4)) // Правые две клетки
 					{
 						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
 						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
@@ -215,22 +215,22 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 					if ((xpos1 == 1) && (ypos1 == 6)) // Верхняя правая угловая клетка 
 						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
 
-					if (ypos1 == 1) // Левые две клетки
+					if ((ypos1 == 1) && (xpos1 == 2 || xpos1 == 4)) // Левые две клетки
 					{
 						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
 					}
-					if (ypos1 == 6) // Правые две клетки
+					if ((ypos1 == 6) && (xpos1 == 3 || xpos1 == 5)) // Правые две клетки
 					{
 						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
 						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
 					}
-					if (xpos1 == 1) // Верхние две клетки
+					if ((xpos1 == 1) && (ypos1 == 2 || ypos1 ==4)) // Верхние две клетки
 					{
 						CheckPP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой нижней клетки
 						CheckPM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой нижней клетки
 					}
-					if (xpos1 == 6) // Нижние две клетки
+					if ((xpos1 == 6) && (ypos1 == 3 || ypos1 == 5)) // Нижние две клетки
 					{
 						CheckMP(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка правой верхней клетки
 						CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
