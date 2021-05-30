@@ -24,6 +24,7 @@ int TicTacPlayer::MakeMove()
 {
 	int row1, col1, row2, col2;
 	int b, d;
+	bool check_a = false, check_c = false;
 	char a, с;
 	cout << "Игрок " << name << ", ваш ход..." << endl;
 	cout << "Введите параметры шашки, которой вы будете ходить. Пример ввода данных: G4, H7, A2" << endl;
@@ -60,6 +61,7 @@ int TicTacPlayer::MakeMove()
 		col1 = 7;
 		break;
 	default:
+		check_a = true;
 		break;
 	}
 	// Проверка буквы маленького регистра
@@ -90,7 +92,10 @@ int TicTacPlayer::MakeMove()
 		col1 = 7;
 		break;
 	default:
-		break;
+		if (check_a == true)
+			return 0;
+		else
+			break;
 	}
 
 	cout << endl;
@@ -128,6 +133,7 @@ int TicTacPlayer::MakeMove()
 		col2 = 7;
 		break;
 	default:
+		check_c = true;
 		break;
 	}
 	// Проверка буквы маленького регистра
@@ -158,12 +164,13 @@ int TicTacPlayer::MakeMove()
 		col2 = 7;
 		break;
 	default:
-		break;
+		if (check_c == true)
+			return 0;
+		else
+			break;
 	}
 	cout << endl;
-	if (0 < row1 || row1 > 7 || 0 < row2 || row2 > 7) // Проверка правильности введенных данных
-		return 0;
-	if (0 < col1 || col1 > 7 || 0 < col2 || col2 > 7) // Проверка правильности введенных данных
+	if (0 > row1 || row1 > 7 || 0 > row2 || row2 > 7) // Проверка правильности введенных данных
 		return 0;
 
 	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp)) // проверка на возможность хода
