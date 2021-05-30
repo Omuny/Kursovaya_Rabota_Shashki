@@ -409,14 +409,14 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 		return true;
 	}
 
-	if (Type == CellType_White) // Обычный ход белой шашки
+	if (cells[xpos1][ypos1] == CellType_White) // Обычный ход белой шашки
 	{
 		if ((xpos2 < xpos1) && (xpos2 == xpos1 - 1))
 			if ((ypos2 == ypos1 - 1) || (ypos2 == ypos1 + 1))
 				return true;
 		return false;
 	}
-	if (Type == CellType_Black) // Обычный ход черной шашки
+	if (cells[xpos1][ypos1] == CellType_Black) // Обычный ход черной шашки
 	{
 		if ((xpos2 > xpos1) && (xpos2 == xpos1 + 1))
 			if ((ypos2 == ypos1 - 1) || (ypos2 == ypos1 + 1))
@@ -425,7 +425,7 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 	}
 
 	bool MoveDamka = false;
-	if (Type == CellType_White_King || Type == CellType_Black_King)// Обычный ход дамкой
+	if (cells[xpos1][ypos1] == CellType_White_King || cells[xpos1][ypos1] == CellType_Black_King)// Обычный ход дамкой
 	{
 		bool diagUR = false; // Правая верхняя диагональ
 		bool diagUL = false; // Левая верхняя диагональ
