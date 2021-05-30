@@ -1,5 +1,6 @@
 #pragma once
 #include"TicTacBoard.h"
+
 class TicTacPlayer
 {
 private:

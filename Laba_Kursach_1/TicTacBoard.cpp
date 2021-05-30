@@ -2,20 +2,20 @@
 #include "TicTacBoard.h"
 #include "TicTacPlayer.h"
 
-TicTacBoard::TicTacBoard(unsigned int size)
+TicTacBoard::TicTacBoard(int size)
 {
 	this->boardsize = size;
 	cells = new CellType * [size];
-	for (unsigned int i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 		cells[i] = new CellType[size];
-	for (unsigned int i = 0; i < size; i++)
-		for (unsigned int j = 0; j < size; j++)
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
 			cells[i][j] = CellType_Empty;
 }
 
 TicTacBoard::~TicTacBoard()
 {
-	for (unsigned int i = 0; i < boardsize; i++)
+	for (int i = 0; i < boardsize; i++)
 		delete[]cells[i];
 	delete[]cells;
 }
@@ -24,14 +24,14 @@ void TicTacBoard::Show()
 {
 	cout << endl;
 	cout << "     ";
-	cout << " A B C D E F G H\t\W - Белая шашка, B - черная. V - Белая дамка, P - черная. ";
+	cout << " A B C D E F G H\tW - Белая шашка, B - черная. V - Белая дамка, P - черная. ";
 	cout << endl;
 	cout << endl;
 
-	for (unsigned int i = 0; i < boardsize; i++)
+	for (int i = 0; i < boardsize; i++)
 	{
 		cout << 8-i << "    |";
-		for (unsigned int j = 0; j < boardsize; j++)
+		for (int j = 0; j < boardsize; j++)
 		{
 			switch (cells[i][j])
 			{
@@ -63,6 +63,7 @@ void TicTacBoard::Show()
 
 void TicTacBoard::SetCell()
 {
+	/*
 	for (int i = 0; i < boardsize; i++)
 		for (int j = 0; j < boardsize; j++)
 		{
@@ -79,66 +80,94 @@ void TicTacBoard::SetCell()
 			if (i == 7 && j % 2 == 0)
 				cells[i][j] = CellType_White;
 		}
+		*/
+	for (int i = 0; i < boardsize; i++)
+	{
+		if ((i + 1) % 2 != 0)
+			cells[0][i + 1] = CellType_Black_King;
+		if (i % 2 == 0)
+			cells[7][i] = CellType_White_King;
+	}
 }
 
-void TicTacBoard::CheckPP(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+void TicTacBoard::CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть ++
 {
-	if (cells[xpos1 + 1][ypos1 + 1] != Type && cells[xpos1 + 1][ypos1 + 1] != (Type + 2) && cells[xpos1 + 1][ypos1 + 1] != CellType_Empty) // Проверка правой нижней клетки
+	// Проверка правой нижней клетки
+	if (cells[xpos1 + 1][ypos1 + 1] != Type && cells[xpos1 + 1][ypos1 + 1] != (Type + 2) && cells[xpos1 + 1][ypos1 + 1] != CellType_Empty)
 	{
 		if (cells[xpos1 + 2][ypos1 + 2] == CellType_Empty)
 		{
 			EatApportunity = true;
 			if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+			{
 				EatOrNot = true;
+				EatX = xpos1 + 1;
+				EatY = ypos1 + 1;
+			}
 		}
 	}
 }
 
-void TicTacBoard::CheckMM(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+void TicTacBoard::CheckMM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть --
 {
-	if (cells[xpos1 - 1][ypos1 - 1] != Type && cells[xpos1 - 1][ypos1 - 1] != (Type + 2) && cells[xpos1 - 1][ypos1 - 1] != CellType_Empty) // Проверка левой верхней клетки
+	// Проверка левой верхней клетки
+	if (cells[xpos1 - 1][ypos1 - 1] != Type && cells[xpos1 - 1][ypos1 - 1] != (Type + 2) && cells[xpos1 - 1][ypos1 - 1] != CellType_Empty)
 	{
 		if (cells[xpos1 - 2][ypos1 - 2] == CellType_Empty)
 		{
 			EatApportunity = true;
 			if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+			{
 				EatOrNot = true;
+				EatX = xpos1 - 1;
+				EatY = ypos1 - 1;
+			}
 		}
 	}
 }
 
-void TicTacBoard::CheckPM(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+void TicTacBoard::CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть +-
 {
-	if (cells[xpos1 + 1][ypos1 - 1] != Type && cells[xpos1 + 1][ypos1 - 1] != (Type + 2) && cells[xpos1 + 1][ypos1 - 1] != CellType_Empty) // Проверка левой нижней клетки
+	// Проверка левой нижней клетки
+	if (cells[xpos1 + 1][ypos1 - 1] != Type && cells[xpos1 + 1][ypos1 - 1] != (Type + 2) && cells[xpos1 + 1][ypos1 - 1] != CellType_Empty)
 	{
 		if (cells[xpos1 + 2][ypos1 - 2] == CellType_Empty)
 		{
 			EatApportunity = true;
 			if ((xpos2 == xpos1 + 2) && (ypos2 == ypos1 - 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+			{
 				EatOrNot = true;
+				EatX = xpos1 + 1;
+				EatY = ypos1 - 1;
+			}
 		}
 	}
 }
 
-void TicTacBoard::CheckMP(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+void TicTacBoard::CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть -+
 {
-	if (cells[xpos1 - 1][ypos1 + 1] != Type && cells[xpos1 - 1][ypos1 + 1] != (Type + 2) && cells[xpos1 - 1][ypos1 + 1] != CellType_Empty) // Проверка правой верхней клетки
+	// Проверка правой верхней клетки
+	if (cells[xpos1 - 1][ypos1 + 1] != Type && cells[xpos1 - 1][ypos1 + 1] != (Type + 2) && cells[xpos1 - 1][ypos1 + 1] != CellType_Empty)
 	{
 		if (cells[xpos1 - 2][ypos1 + 2] == CellType_Empty)
 		{
 			EatApportunity = true;
 			if ((xpos2 == xpos1 - 2) && (ypos2 == ypos1 + 2) && (xpos1 == SaveXpos1) && (ypos1 == SaveYpos1)) // съеле ли той шашкой, которая может съесть
+			{
 				EatOrNot = true;
+				EatX = xpos1 - 1;
+				EatY = ypos1 + 1;
+			}
 		}
 	}
 }
 
 
-bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned int xpos2, unsigned int ypos2, CellType Type, bool& EatOpp) // проверка возможности хода
+bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellType Type, bool& EatOpp) // проверка возможности хода
 {
 	/* !!!!! Внимание. Важно! Я перепутал местами xpos и ypos, поэтому теперь xpos отвечает за строки, а ypos отвечает за столбцы !!!!! */
 
@@ -157,7 +186,7 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 
 	bool EatApportunity = false; // Возможность съесть шашку
 	bool EatOrNot = false; // Съели при возможности или нет
-	unsigned int SaveXpos1, SaveYpos1;
+	int SaveXpos1, SaveYpos1;
 	SaveXpos1 = xpos1;
 	SaveYpos1 = ypos1;
 	
@@ -168,7 +197,6 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 		{
 			if (cells[xpos1][ypos1] == Type) // Проверка обычных шашек только цвета текущего игрока
 			{
-
 				 // Внешний квадрат
 				if (xpos1 == 0 || ypos1 == 0 || xpos1 == 7 || ypos1 == 7)
 				{
@@ -249,9 +277,119 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 
 			if (cells[xpos1][ypos1] == (Type + 2)) // Проверка дамки цвета игрока
 			{
-
+				bool diagUR = false; // Правая верхняя диагональ
+				bool diagUL = false; // Левая верхняя диагональ
+				bool diagDR = false; // Правая нижняя диагональ
+				bool diagDL = false; // Левая нижняя диагональ
+				for (int k = 1; k < 7; k++) // Проверяем диагонали во все стороны
+				{
+					// Проверяем нижнюю правую диагональ от шашки
+					if (diagDR == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+						if (((xpos1 + k) < 7) && ((ypos1 + k) < 7)) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+							if (cells[xpos1 + k][ypos1 + k] != CellType_Empty) // Проверям есть ли на пути шашка
+							{
+								diagDR = true;
+								if ((cells[xpos1 + k][ypos1 + k] != Type) && (cells[xpos1 + k][ypos1 + k] != Type + 2)) // Если шашка противоположного цвета
+									if (cells[xpos1 + (k + 1)][ypos1 + (k + 1)] == CellType_Empty) // Если поле за шашкой пустое, значит мы можем съесть
+									{
+										EatApportunity = true;
+										if((SaveXpos1 == xpos1) && (SaveYpos1 == ypos1)) // Проверка ходим ли мы проверяемой в данный момент шашкой
+											for (int n = (k + 1); n < 8; n++) // Проходимся по всем полям за съедаемой шашкой, чтобы проверить как далеко после съедания может пойти дамка
+												if (((xpos1 + n) < 8) && ((ypos1 + n) < 8)) // Проверка не выходим ли мы за пределы поля
+												{
+													if (cells[xpos1 + n][ypos1 + n] != CellType_Empty) // Как только на пути встречается шашка, выходим из цикла проверки
+														break;
+													if ((xpos2 == xpos1 + n) && (ypos2 == ypos1 + n)) // Если мы едим эту шашку
+													{
+														EatOrNot = true;
+														EatX = xpos1 + k;
+														EatY = ypos1 + k;
+													}
+												}
+									}
+							}
+					// Проверяем верхнюю левую диагональ от шашки
+					if (diagUL == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+						if ((0 < (xpos1 - k)) && (0 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+							if (cells[xpos1 - k][ypos1 - k] != CellType_Empty) // Проверям есть ли на пути шашка
+							{
+								diagUL = true;
+								if ((cells[xpos1 - k][ypos1 - k] != Type) && (cells[xpos1 - k][ypos1 - k] != Type + 2)) // Если шашка противоположного цвета
+									if (cells[xpos1 - (k + 1)][ypos1 - (k + 1)] == CellType_Empty) // Если поле за шашкой пустое, значит мы можем съесть
+									{
+										EatApportunity = true;
+										if ((SaveXpos1 == xpos1) && (SaveYpos1 == ypos1)) // Проверка ходим ли мы проверяемой в данный момент шашкой
+											for (int n = (k + 1); n < 8; n++) // Проходимся по всем полям за съедаемой шашкой, чтобы проверить как далеко после съедания может пойти дамка
+												if ((-1 < (xpos1 - n)) && (-1 < (ypos1 - n))) // Проверка не выходим ли мы за пределы поля
+												{
+													if (cells[xpos1 - n][ypos1 - n] != CellType_Empty) // Как только на пути встречается шашка, выходим из цикла проверки
+														break;
+													if ((xpos2 == xpos1 - n) && (ypos2 == ypos1 - n)) // Если мы едим эту шашку
+													{
+														EatOrNot = true;
+														EatX = xpos1 - k;
+														EatY = ypos1 - k;
+													}
+												}
+									}
+							}
+					// Проверяем нижнюю левую диагональ от шашки
+					if (diagDL == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+						if (((xpos1 + k) < 7) && (0 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+							if (cells[xpos1 + k][ypos1 - k] != CellType_Empty) // Проверям есть ли на пути шашка
+							{
+								diagDL = true;
+								if ((cells[xpos1 + k][ypos1 - k] != Type) && (cells[xpos1 + k][ypos1 - k] != Type + 2)) // Если шашка противоположного цвета
+									if (cells[xpos1 + (k + 1)][ypos1 - (k + 1)] == CellType_Empty) // Если поле за шашкой пустое, значит мы можем съесть
+									{
+										EatApportunity = true;
+										if ((SaveXpos1 == xpos1) && (SaveYpos1 == ypos1)) // Проверка ходим ли мы проверяемой в данный момент шашкой
+											for (int n = (k + 1); n < 8; n++) // Проходимся по всем полям за съедаемой шашкой, чтобы проверить как далеко после съедания может пойти дамка
+												if (((xpos1 + n) < 8) && (-1 < (ypos1 - n))) // Проверка не выходим ли мы за пределы поля
+												{
+													if (cells[xpos1 + n][ypos1 - n] != CellType_Empty) // Как только на пути встречается шашка, выходим из цикла проверки
+														break;
+													if ((xpos2 == xpos1 + n) && (ypos2 == ypos1 - n)) // Если мы едим эту шашку
+													{
+														EatOrNot = true;
+														EatX = xpos1 + k;
+														EatY = ypos1 - k;
+													}
+												}
+									}
+							}
+					// Проверяем верхнюю правую диагональ от шашки
+					if (diagUR == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+						if ((0 < (xpos1 - k)) && ((ypos1 + k) < 7)) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+							if (cells[xpos1 - k][ypos1 + k] != CellType_Empty) // Проверям есть ли на пути шашка
+							{
+								diagUR = true;
+								if ((cells[xpos1 - k][ypos1 + k] != Type) && (cells[xpos1 - k][ypos1 + k] != Type + 2)) // Если шашка противоположного цвета
+									if (cells[xpos1 - (k + 1)][ypos1 + (k + 1)] == CellType_Empty) // Если поле за шашкой пустое, значит мы можем съесть
+									{
+										EatApportunity = true;
+										if ((SaveXpos1 == xpos1) && (SaveYpos1 == ypos1)) // Проверка ходим ли мы проверяемой в данный момент шашкой
+											for (int n = (k + 1); n < 8; n++) // Проходимся по всем полям за съедаемой шашкой, чтобы проверить как далеко после съедания может пойти дамка
+												if ((-1 < (xpos1 - n)) && ((ypos1 + n) < 8)) // Проверка не выходим ли мы за пределы поля
+												{
+													if (cells[xpos1 - n][ypos1 + n] != CellType_Empty) // Как только на пути встречается шашка, выходим из цикла проверки
+														break;
+													if ((xpos2 == xpos1 - n) && (ypos2 == ypos1 + n)) // Если мы едим эту шашку
+													{
+														EatOrNot = true;
+														EatX = xpos1 - k;
+														EatY = ypos1 + k;
+													}
+												}
+									}
+							}
+				}
 			}
+			if (EatOrNot == true)
+				break;
 		}
+		if (EatOrNot == true)
+			break;
 	}
 
 	xpos1 = SaveXpos1;
@@ -265,7 +403,6 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 		if ((EatApportunity == true) && (EatOrNot == false)) // если не съели при возможности
 			return false;
 	}
-
 	if (this->CheckHod == true)
 	{
 		CheckHod = false;
@@ -286,49 +423,96 @@ bool TicTacBoard::CkeckLegal(unsigned int xpos1, unsigned int ypos1, unsigned in
 				return true;
 		return false;
 	}
+
+	bool MoveDamka = false;
+	if (Type == CellType_White_King || Type == CellType_Black_King)// Обычный ход дамкой
+	{
+		bool diagUR = false; // Правая верхняя диагональ
+		bool diagUL = false; // Левая верхняя диагональ
+		bool diagDR = false; // Правая нижняя диагональ
+		bool diagDL = false; // Левая нижняя диагональ
+		for (int k = 1; k < 8; k++) // цикл для проверки всех диагоналей
+		{
+			// Проверяем нижнюю правую диагональ от шашки
+			if (diagDR == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+				if (((xpos1 + k) < 8) && ((ypos1 + k) < 8)) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+				{
+					if (cells[xpos1 + k][ypos1 + k] == CellType_Empty) // Проверям есть ли на пути шашка
+					{
+						if (((xpos1 + k) == xpos2) && ((ypos1 + k) == ypos2)) // Ходим ли мы на это поле
+							MoveDamka = true;
+					}
+					else
+						diagDR = true;
+				}
+			// Проверяем верхнюю левую диагональ от шашки
+			if (diagUL == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+				if ((-1 < (xpos1 - k)) && (-1 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка (-1 < (xpos1 - n)) && (-1 < (ypos1 - n))
+				{
+					if (cells[xpos1 - k][ypos1 - k] == CellType_Empty) // Проверям есть ли на пути шашка
+					{
+						if (((xpos1 - k) == xpos2) && ((ypos1 - k) == ypos2)) // Ходим ли мы на это поле
+							MoveDamka = true;
+					}
+					else
+						diagUL = true;
+				}
+			// Проверяем нижнюю левую диагональ от шашки
+			if (diagDL == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+				if (((xpos1 + k) < 8) && (-1 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+				{
+					if (cells[xpos1 + k][ypos1 - k] == CellType_Empty) // Проверям есть ли на пути шашка
+					{
+						if (((xpos1 + k) == xpos2) && ((ypos1 - k) == ypos2)) // Ходим ли мы на это поле
+							MoveDamka = true;
+					}
+					else
+						diagDL = true;
+				}
+			// Проверяем верхнюю правую диагональ от шашки
+			if (diagUR == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
+				if ((-1 < (xpos1 - k)) && ((ypos1 + k) < 8)) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+				{
+					if (cells[xpos1 - k][ypos1 + k] == CellType_Empty) // Проверям есть ли на пути шашка
+					{
+						if (((xpos1 - k) == xpos2) && ((ypos1 + k) == ypos2)) // Ходим ли мы на это поле
+							MoveDamka = true;
+					}
+					else
+						diagUR = true;
+				}
+			if (MoveDamka == true)
+				return true;
+		}
+		if (MoveDamka == false)
+			return false;
+	}
+	return false;
 }
 
-void TicTacBoard::CellMove(unsigned int& xpos1, unsigned int& ypos1, unsigned int& xpos2, unsigned int& ypos2, bool& EatOpp)
+void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp)
 {
 	CellType type;
 
-	if ((cells[xpos1][ypos1] == CellType_Black) || (cells[xpos1][ypos1] == CellType_White))
+	if (EatOpp == false) // если обычный ход
 	{
-		if (EatOpp == false) // если обычный ход
-		{
-			type = cells[xpos1][ypos1];
-			cells[xpos1][ypos1] = CellType_Empty;
-			cells[xpos2][ypos2] = type;
-		}
-		if (EatOpp == true) // если съедаем шашку
-		{
-			type = cells[xpos1][ypos1];
-			cells[xpos1][ypos1] = CellType_Empty;
+		type = cells[xpos1][ypos1];
+		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
+		cells[xpos2][ypos2] = type; // ставим шашку на место хода
+	}
+	if (EatOpp == true) // если съедаем шашку
+	{
+		type = cells[xpos1][ypos1];
+		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
+		cells[EatX][EatY] = CellType_Empty; // убираем съеденную шашку
+		cells[xpos2][ypos2] = type; // ставим шашку на место хода
 
-			if (xpos1 > xpos2)
-			{
-				if (ypos1 > ypos2)
-					cells[xpos1 - 1][ypos1 - 1] = CellType_Empty; // если едим в лево вверх
-				if (ypos1 < ypos2)
-					cells[xpos1 - 1][ypos1 + 1] = CellType_Empty; // если едим в право вверх
-			}
-			if (xpos1 < xpos2)
-			{
-				if (ypos1 > ypos2)
-					cells[xpos1 + 1][ypos1 - 1] = CellType_Empty; // если едим в лево вниз
-				if (ypos1 < ypos2)
-					cells[xpos1 + 1][ypos1 + 1] = CellType_Empty; // если едим в право вниз
-			}
-
-			cells[xpos2][ypos2] = type;
-
-			this->CheckHod = true; // для повторной проверки
-			unsigned int SaveX = xpos1;
-			unsigned int SaveY = ypos1;
-			xpos1 = xpos2;
-			ypos1 = ypos2;
-			xpos2 = SaveX;
-			ypos2 = SaveY;
-		}
+		this->CheckHod = true; // для повторной проверки
+		int SaveX = xpos1;
+		int SaveY = ypos1;
+		xpos1 = xpos2;
+		ypos1 = ypos2;
+		xpos2 = SaveX;
+		ypos2 = SaveY;
 	}
 }

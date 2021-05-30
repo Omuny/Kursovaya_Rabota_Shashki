@@ -7,21 +7,23 @@ private:
 	int boardsize;
 	CellType** cells;
 	bool CheckHod = false;
+	int EatX;
+	int EatY;
 public:
-	TicTacBoard(unsigned int boardsize);
+	TicTacBoard(int boardsize);
 	virtual ~TicTacBoard();
 	void Show();
 	void SetCell();
-	bool CkeckLegal(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, CellType Type, bool& EatOpp);
-	void CellMove(unsigned int& xpos1, unsigned int& ypos1, unsigned int& xpos2, unsigned int& ypos2, bool& EatOpp);
+	bool CkeckLegal(int ypos1, int xpos1, int xpos2, int ypos2, CellType Type, bool& EatOpp);
+	void CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp);
 
-	void CheckPP(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1, 
+	void CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 		bool& EatOrNot,bool& EatApportunity, CellType Type); //CheckPlusPlus
-	void CheckMM(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1,
+	void CheckMM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,
 		bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusMinus
-	void CheckPM(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1,
+	void CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,
 		bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckPlusMinus
-	void CheckMP(unsigned int ypos1, unsigned int xpos1, unsigned int xpos2, unsigned int ypos2, unsigned int SaveXpos1, unsigned int SaveYpos1,
+	void CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,
 		bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusPlus
 };
 

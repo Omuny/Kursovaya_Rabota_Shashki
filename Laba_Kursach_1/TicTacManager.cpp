@@ -15,7 +15,7 @@ TicTacManager::~TicTacManager()
 
 bool TicTacManager::Init()
 {
-	unsigned int boardsize = 8;
+	int boardsize = 8;
 	string playerName;
 
 	this->board = new TicTacBoard(boardsize);
@@ -46,21 +46,21 @@ void TicTacManager::ShowBoard()
 void TicTacManager::MakeMove()
 {
 	int possible;
-	ShowBoard();
 
+	ShowBoard();
 	Here: // Лейбл для перехода
 	possible = currentPlayer->MakeMove();
+	system("cls");
 
 	if(possible == 0) // проверка правильности хода
 	{
-		cout << "Недопустимый ход, попробуйте еще раз" << endl;
+		cout << "Недопустимый ход, попробуйте еще раз!!!" << endl;
 		ShowBoard();
 		goto Here; // Переход отсюда
 	}
 
 	if (possible == 2) // если можно съесть еще раз
 	{
-		cout << "Вы обязанны есть еще раз" << endl;
 		ShowBoard();
 		goto Here; // Переход отсюда
 	}

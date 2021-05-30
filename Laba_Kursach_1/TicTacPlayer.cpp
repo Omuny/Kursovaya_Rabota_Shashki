@@ -22,8 +22,8 @@ void TicTacPlayer::SetBoard(TicTacBoard* board)
 
 int TicTacPlayer::MakeMove()
 {
-	unsigned int row1, col1, row2, col2;
-	unsigned int b, d;
+	int row1, col1, row2, col2;
+	int b, d;
 	char a, с;
 	cout << "Игрок " << name << ", ваш ход..." << endl;
 	cout << "Введите параметры шашки, которой вы будете ходить. Пример ввода данных: G4, H7, A2" << endl;
@@ -160,6 +160,11 @@ int TicTacPlayer::MakeMove()
 	default:
 		break;
 	}
+	cout << endl;
+	if (0 < row1 || row1 > 7 || 0 < row2 || row2 > 7) // Проверка правильности введенных данных
+		return 0;
+	if (0 < col1 || col1 > 7 || 0 < col2 || col2 > 7) // Проверка правильности введенных данных
+		return 0;
 
 	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp)) // проверка на возможность хода
 	{
@@ -170,7 +175,10 @@ int TicTacPlayer::MakeMove()
 		if (EatOpp == false)
 			return 1;
 		if (EatOpp == true)
+		{
+			cout << "Игрок " << name << " вы обязанны есть еще раз!!!" << endl;
 			return 2;
+		}
 	}
 	return 0;
 }
