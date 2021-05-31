@@ -16,6 +16,7 @@ public:
 	void SetCell();
 	bool CkeckLegal(int ypos1, int xpos1, int xpos2, int ypos2, CellType Type, bool& EatOpp);
 	void CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp);
+	void CheckDamka(int xpos2, int ypos2);
 
 	void CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 		bool& EatOrNot,bool& EatApportunity, CellType Type); //CheckPlusPlus

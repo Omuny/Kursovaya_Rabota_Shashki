@@ -63,6 +63,7 @@ void TicTacBoard::Show()
 
 void TicTacBoard::SetCell()
 {
+	/*
 	for (int i = 0; i < boardsize; i++)
 		for (int j = 0; j < boardsize; j++)
 		{
@@ -79,6 +80,14 @@ void TicTacBoard::SetCell()
 			if (i == 7 && j % 2 == 0)
 				cells[i][j] = CellType_White;
 		}
+		*/
+	for (int j = 0; j < boardsize; j++)
+	{
+		if (j % 2 != 0)
+			cells[0][j] = CellType_Black;
+		if (j % 2 == 0)
+			cells[7][j] = CellType_White;
+	}
 }
 
 void TicTacBoard::CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
@@ -158,9 +167,9 @@ void TicTacBoard::CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXp
 }
 
 
-bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellType Type, bool& EatOpp) // проверка возможности хода
+bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellType Type, bool& EatOpp) // Проверка возможности хода
 {
-	/* !!!!! Внимание. Важно! Я перепутал местами xpos и ypos, поэтому теперь xpos отвечает за строки, а ypos отвечает за столбцы !!!!! */
+	/* !!!!!!!!!!!!!!!!!!!! Внимание. Важно! Я перепутал местами xpos и ypos, поэтому теперь xpos отвечает за строки, а ypos отвечает за столбцы! !!!!!!!!!!!!!!!!!!!! */
 
 	if ((xpos2 < 0) || (xpos2 > boardsize) || (ypos2 < 0) || (ypos2 > boardsize)) // если выходим за пределы доски
 		return false;
@@ -265,7 +274,6 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 					CheckMM(ypos1, xpos1, xpos2, ypos2, SaveXpos1, SaveYpos1, EatOrNot, EatApportunity, Type); // Проверка левой верхней клетки
 				}
 			}
-
 			if (cells[xpos1][ypos1] == (Type + 2)) // Проверка дамки цвета игрока
 			{
 				bool diagUR = false; // Правая верхняя диагональ
@@ -382,7 +390,6 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 		if (EatOrNot == true)
 			break;
 	}
-
 	xpos1 = SaveXpos1;
 	ypos1 = SaveYpos1;
 	EatOpp = EatApportunity;
@@ -481,7 +488,15 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 	return false;
 }
 
-void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp)
+void TicTacBoard::CheckDamka(int xpos2, int ypos2) // Проверка шакшки и превращение в дамку
+{
+	if ((xpos2 == 0) && (cells[xpos2][ypos2] == CellType_White))
+		cells[xpos2][ypos2] = CellType_White_King;
+	if ((xpos2 == 7) && (cells[xpos2][ypos2] == CellType_Black))
+		cells[xpos2][ypos2] = CellType_Black_King;
+}
+
+void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp) // Метод реализации ходов шашки
 {
 	CellType type;
 
@@ -490,6 +505,8 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		type = cells[xpos1][ypos1];
 		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
 		cells[xpos2][ypos2] = type; // ставим шашку на место хода
+		
+		CheckDamka(xpos2, ypos2); // Проверка шашки можетли она стать дамкой
 	}
 	if (EatOpp == true) // если съедаем шашку
 	{
@@ -497,6 +514,8 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
 		cells[EatX][EatY] = CellType_Empty; // убираем съеденную шашку
 		cells[xpos2][ypos2] = type; // ставим шашку на место хода
+
+		CheckDamka(xpos2, ypos2); // Проверка шашки можетли она стать дамкой
 
 		this->CheckHod = true; // для повторной проверки
 		int SaveX = xpos1;
