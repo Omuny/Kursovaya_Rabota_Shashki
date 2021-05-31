@@ -46,27 +46,42 @@ void TicTacManager::ShowBoard()
 void TicTacManager::MakeMove()
 {
 	int possible;
-	string name;
 
 	ShowBoard();
-	Here: // Лейбл для перехода
-	possible = currentPlayer->MakeMove(name);
+	Here: // Лейбл для перехода <---
+	possible = currentPlayer->MakeMove();
 	system("cls");
 
 	if(possible == 0) // проверка правильности хода
 	{
 		cout << "Недопустимый ход, попробуйте еще раз!!!" << endl;
 		ShowBoard();
-		goto Here; // Переход отсюда
+		goto Here; // Переход отсюда--->
 	}
 
 	if (possible == 2) // если можно съесть еще раз
 	{
-		cout << "Игрок " << name << " вы обязанны есть еще раз!!!" << endl;
+		cout << "Игрок " << currentPlayer->GetName() << " вы обязанны есть еще раз!!!" << endl;
 		ShowBoard();
-		goto Here; // Переход отсюда
+		goto Here; // Переход отсюда--->
+	}
+
+	if (this->board->CheckEndCondition())
+	{
+		if (this->board->IsVictory())
+			cout << "Игрок " << currentPlayer->GetName() << " победил!" << endl;
+		else
+			cout << "Ничья!" << endl;
+		this->bGamefinished = true;
+		ShowBoard();
+		return;
 	}
 
 	if (possible == 1) // если есть больше нельзя
 		currentPlayer = (currentPlayer == player1) ? player2 : player1;
+}
+
+bool TicTacManager::IsGameFinished()
+{
+	return bGamefinished;
 }

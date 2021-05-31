@@ -1,4 +1,4 @@
-﻿// Laba_Kursach_1.cpp
+﻿// Laba_Kursach.cpp
 
 #include "pch.h"
 #include "TicTacManager.h"
@@ -13,9 +13,10 @@ int main()
         _getch();
         return 0;
     }
-    while (true)
+    while (!manager.IsGameFinished())
     {
         manager.MakeMove();
     }
     _getch();
+    return 0;
 }

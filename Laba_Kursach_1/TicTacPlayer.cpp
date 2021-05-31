@@ -20,9 +20,8 @@ void TicTacPlayer::SetBoard(TicTacBoard* board)
 	this->board = board;
 }
 
-int TicTacPlayer::MakeMove(string& name)
+int TicTacPlayer::MakeMove()
 {
-	name = this->name;
 	int row1, col1, row2, col2;
 	int b, d;
 	bool check_a = false, check_c = false;

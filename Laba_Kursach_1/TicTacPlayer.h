@@ -13,7 +13,7 @@ public:
 	virtual ~TicTacPlayer();
 	void SetupPlayer(string name, CellType cellType);
 	void SetBoard(TicTacBoard* board);
-	int MakeMove(string& name);
+	int MakeMove();
 	string GetName();
 };
 
