@@ -63,7 +63,6 @@ void TicTacBoard::Show()
 
 void TicTacBoard::SetCell()
 {
-	/*
 	for (int i = 0; i < boardsize; i++)
 		for (int j = 0; j < boardsize; j++)
 		{
@@ -80,14 +79,6 @@ void TicTacBoard::SetCell()
 			if (i == 7 && j % 2 == 0)
 				cells[i][j] = CellType_White;
 		}
-		*/
-	for (int i = 0; i < boardsize; i++)
-	{
-		if ((i + 1) % 2 != 0)
-			cells[0][i + 1] = CellType_Black_King;
-		if (i % 2 == 0)
-			cells[7][i] = CellType_White_King;
-	}
 }
 
 void TicTacBoard::CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
