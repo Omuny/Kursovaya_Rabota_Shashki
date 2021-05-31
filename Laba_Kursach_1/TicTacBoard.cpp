@@ -79,13 +79,9 @@ void TicTacBoard::SetCell()
 				cells[i][j] = CellType_White;
 		}
 		*/
-	for (int j = 0; j < boardsize; j++)
-	{
-		if (j % 2 != 0)
-			cells[0][j] = CellType_Black;
-		if (j % 2 == 0)
-			cells[7][j] = CellType_White;
-	}
+	cells[1][0] = CellType_Black_King;
+	//cells[1][2] = CellType_White;
+	cells[2][3] = CellType_White_King;
 }
 
 void TicTacBoard::CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
@@ -774,7 +770,7 @@ bool TicTacBoard::CheckDraw(int& white, int& black, int& n, int& FirstCheck, int
 	// Если в течении 60 ходов предыдущяя позиция не менялась при 6 или 7 фигурах с момента ее наступления
 	// Если в течении 30 ходов предыдущяя позиция не менялась при 4 или 5 фигурах с момента ее наступления
 	// Если в течении 5 ходов предыдущяя позиция не менялась при 2 или 3 фигурах с момента ее наступления
-	if (FirstCheck == 61 || SecondCheck == 31 || ThirdCheck == 6) 
+	if (FirstCheck == 60 || SecondCheck == 30 || ThirdCheck == 5) 
 		return true;
 
 	OldBChecker = BChecker;

@@ -69,9 +69,9 @@ void TicTacManager::MakeMove(int& white, int& black, int& n, int& FirstCheck, in
 	if (this->board->CheckEndCondition(white, black, n, FirstCheck, SecondCheck, ThirdCheck))
 	{
 		if (this->board->IsVictory())
-			cout << "Игрок " << currentPlayer->GetName() << " победил!" << endl;
+			cout << "\tИгрок " << currentPlayer->GetName() << " победил!" << endl;
 		else
-			cout << "Ничья!" << endl;
+			cout << "\tНичья!" << endl;
 		this->bGamefinished = true;
 		ShowBoard();
 		return;
