@@ -21,7 +21,7 @@ bool TicTacManager::Init()
 	this->board = new TicTacBoard(boardsize);
 	this->player1 = new TicTacPlayer();
 	this->player2 = new TicTacPlayer();
-	cin.ignore();
+	//cin.ignore();
 
 	cout << "Введите имя игрока, играющего белыми: ";
 	getline(cin, playerName);
@@ -46,10 +46,11 @@ void TicTacManager::ShowBoard()
 void TicTacManager::MakeMove()
 {
 	int possible;
+	string name;
 
 	ShowBoard();
 	Here: // Лейбл для перехода
-	possible = currentPlayer->MakeMove();
+	possible = currentPlayer->MakeMove(name);
 	system("cls");
 
 	if(possible == 0) // проверка правильности хода
@@ -61,6 +62,7 @@ void TicTacManager::MakeMove()
 
 	if (possible == 2) // если можно съесть еще раз
 	{
+		cout << "Игрок " << name << " вы обязанны есть еще раз!!!" << endl;
 		ShowBoard();
 		goto Here; // Переход отсюда
 	}

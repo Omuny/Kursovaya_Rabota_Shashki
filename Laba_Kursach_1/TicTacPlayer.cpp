@@ -20,13 +20,14 @@ void TicTacPlayer::SetBoard(TicTacBoard* board)
 	this->board = board;
 }
 
-int TicTacPlayer::MakeMove()
+int TicTacPlayer::MakeMove(string& name)
 {
+	name = this->name;
 	int row1, col1, row2, col2;
 	int b, d;
 	bool check_a = false, check_c = false;
 	char a, с;
-	cout << "Игрок " << name << ", ваш ход..." << endl;
+	cout << "Игрок " << this->name << ", ваш ход..." << endl;
 	cout << "Введите параметры шашки, которой вы будете ходить. Пример ввода данных: G4, H7, A2" << endl;
 	cout << "Введите столбец: ";
 	cin >> a;
@@ -92,7 +93,7 @@ int TicTacPlayer::MakeMove()
 		col1 = 7;
 		break;
 	default:
-		if (check_a == true)
+		if (check_a == true) // Если ни одна из букв не подошла
 			return 0;
 		else
 			break;
@@ -164,7 +165,7 @@ int TicTacPlayer::MakeMove()
 		col2 = 7;
 		break;
 	default:
-		if (check_c == true)
+		if (check_c == true) // Если ни одна из букв не подошла
 			return 0;
 		else
 			break;
@@ -182,10 +183,7 @@ int TicTacPlayer::MakeMove()
 		if (EatOpp == false)
 			return 1;
 		if (EatOpp == true)
-		{
-			cout << "Игрок " << name << " вы обязанны есть еще раз!!!" << endl;
 			return 2;
-		}
 	}
 	return 0;
 }
