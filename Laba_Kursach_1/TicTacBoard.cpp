@@ -500,8 +500,9 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		type = cells[xpos1][ypos1];
 		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
 		cells[xpos2][ypos2] = type; // ставим шашку на место хода
-		
-		CheckDamka(xpos2, ypos2); // Проверка шашки можетли она стать дамкой
+		NowXpos = xpos2; // Ныняшняя x координата походившей шашки
+		NowYpos = ypos2; // Ныняшняя y координата походившей шашки
+		CheckDamka(xpos2, ypos2); // Проверка шашки может-ли она стать дамкой
 	}
 	if (EatOpp == true) // если съедаем шашку
 	{
@@ -509,7 +510,8 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
 		cells[EatX][EatY] = CellType_Empty; // убираем съеденную шашку
 		cells[xpos2][ypos2] = type; // ставим шашку на место хода
-
+		NowXpos = xpos2; // Ныняшняя x координата походившей шашки
+		NowYpos = ypos2; // Ныняшняя y координата походившей шашки
 		CheckDamka(xpos2, ypos2); // Проверка шашки может-ли она стать дамкой
 
 		this->CheckHod = true; // для повторной проверки
@@ -695,16 +697,97 @@ bool TicTacBoard::CheckVictory()
 	return false;
 }
 
-bool TicTacBoard::CheckDraw()
+bool TicTacBoard::CheckDraw(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck)
 {
+	// Пройдемся по всей доске и посчитаем количество всех видов шашек
+	int BChecker = 0, WChecker = 0, BDamka = 0, WDamka = 0; // Переменные для записи количества тех или иных шашек
+	for (int i = 0; i < boardsize; i++)
+		for (int j = 0; j < boardsize; j++)
+		{
+			if (cells[i][j] == CellType_White)
+				WChecker++; // Количество белых шашек
+			if (cells[i][j] == CellType_Black)
+				BChecker++; // Количество черных шашек
+			if (cells[i][j] == CellType_White_King)
+				WDamka++; // Количество белых дамок
+			if (cells[i][j] == CellType_Black_King)
+				BDamka++; // Количество черных дамок
+		}
+	int sum = WChecker + BChecker + WDamka + BDamka; // Общее количество шашек на доске
 
+	if (sum < 9) // Если суммарное количество шашек 8 или меньше, то есть наступило окончание партии
+	{
+		if (Type == CellType_White) // Если ход белых
+		{
+			if (WDamka > 2 && BDamka == 1) // Если у белых 3 или более дамок и у черных 1 дамка
+				white++;
+			else
+				white = 0;
+		}
+		else // Если ход черных
+		{
+			if (BDamka > 2 && WDamka == 1) // Если у черных 3 или более дамок и у белых 1 дамка
+				black++;
+			else
+				black = 0;
+		}
+	}
+	if (white == 16 || black == 16) // Если прошлая ситуация простояла в течении 15 ходов игрока с момента ее установления
+		return true;
+
+	if (cells[NowXpos][NowYpos] == CellType_White_King || cells[NowXpos][NowYpos] == CellType_Black_King) // Если ход был сделан дамкой
+	{
+		if ((OldBChecker == BChecker) && (OldWChecker == WChecker) && (OldBDamka == BDamka) && (OldWDamka == WDamka)) // Если не происходило взятия или превращения, то есть соотношение сил не менялось
+			n++;
+		else
+			n = 0;
+	}
+	else
+		n = 0;
+	if (n == 15) // Если в течении 15 ходов игроки делали ходы только дамками
+		return true;
+
+	if ((WDamka > 0) && (BDamka > 0)) // Если оба соперника имеют хотя бы 1 дамку
+	{
+		if ((OldBChecker == BChecker) && (OldWChecker == WChecker) && (OldBDamka == BDamka) && (OldWDamka == WDamka)) // Если не происходило взятия или превращения, то есть соотношение сил не менялось
+		{
+			if (sum == 2 || sum == 3) // Если количество фигур равно 2 или 3
+				ThirdCheck++;
+			if (sum == 4 || sum == 5) // Если количество фигур равно 4 или 5
+				SecondCheck++;
+			if (sum == 6 || sum == 7) // Если количество фигур равно 6 или 7
+				FirstCheck++;
+		}
+		else
+		{
+			FirstCheck = 0;
+			SecondCheck = 0;
+			ThirdCheck = 0;
+		}
+	}
+	else
+	{
+		FirstCheck = 0;
+		SecondCheck = 0;
+		ThirdCheck = 0;
+	}
+	// Если в течении 60 ходов предыдущяя позиция не менялась при 6 или 7 фигурах с момента ее наступления
+	// Если в течении 30 ходов предыдущяя позиция не менялась при 4 или 5 фигурах с момента ее наступления
+	// Если в течении 5 ходов предыдущяя позиция не менялась при 2 или 3 фигурах с момента ее наступления
+	if (FirstCheck == 61 || SecondCheck == 31 || ThirdCheck == 6) 
+		return true;
+
+	OldBChecker = BChecker;
+	OldWChecker = WChecker;
+	OldBDamka = BDamka;
+	OldWDamka = WDamka;
 
 	return false;
 }
 
-bool TicTacBoard::CheckEndCondition()
+bool TicTacBoard::CheckEndCondition(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck)
 {
-	if (CheckVictory() || CheckDraw())
+	if (CheckVictory() || CheckDraw(white, black, n, FirstCheck, SecondCheck, ThirdCheck))
 		return true;
 
 	return false;

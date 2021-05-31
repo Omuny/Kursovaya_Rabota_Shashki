@@ -8,11 +8,11 @@ private:
 	CellType** cells;
 	CellType Type;
 	bool CheckHod = false;
-	int EatX;
-	int EatY;
+	int EatX, EatY, NowXpos, NowYpos;
+	int OldBChecker = 0, OldWChecker = 0, OldBDamka = 0, OldWDamka = 0; // Переменные для сохранения количества тех или иных шашек
 	bool bVictory = false;
 	bool CheckVictory();
-	bool CheckDraw();
+	bool CheckDraw(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck);
 public:
 	TicTacBoard(int boardsize);
 	virtual ~TicTacBoard();
@@ -27,7 +27,7 @@ public:
 	void CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckPlusMinus
 	void CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusPlus
 
-	bool CheckEndCondition();
+	bool CheckEndCondition(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck);
 	bool IsVictory();
 
 	void CheckEndPP(int j, int i, int& n); //CheckEndPlusPlus

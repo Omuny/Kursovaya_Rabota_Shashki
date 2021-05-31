@@ -43,7 +43,7 @@ void TicTacManager::ShowBoard()
 	this->board->Show();
 }
 
-void TicTacManager::MakeMove()
+void TicTacManager::MakeMove(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck)
 {
 	int possible;
 
@@ -66,7 +66,7 @@ void TicTacManager::MakeMove()
 		goto Here; // Переход отсюда--->
 	}
 
-	if (this->board->CheckEndCondition())
+	if (this->board->CheckEndCondition(white, black, n, FirstCheck, SecondCheck, ThirdCheck))
 	{
 		if (this->board->IsVictory())
 			cout << "Игрок " << currentPlayer->GetName() << " победил!" << endl;

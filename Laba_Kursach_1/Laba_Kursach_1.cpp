@@ -13,10 +13,11 @@ int main()
         _getch();
         return 0;
     }
-    while (!manager.IsGameFinished())
+    int white = 0, black = 0, n = 0, FirstCheck = 0, SecondCheck = 0, ThirdCheck = 0; // Счетчики для проверки ничьи
+    do
     {
-        manager.MakeMove();
-    }
+        manager.MakeMove(white, black, n, FirstCheck, SecondCheck, ThirdCheck);
+    } while (!manager.IsGameFinished());
     _getch();
     return 0;
 }

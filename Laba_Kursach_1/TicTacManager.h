@@ -15,7 +15,7 @@ public:
 	virtual ~TicTacManager();
 	bool Init();
 	void ShowBoard();
-	void MakeMove();
+	void MakeMove(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck);
 	bool IsGameFinished();
 };
 
