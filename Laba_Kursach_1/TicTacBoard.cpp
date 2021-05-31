@@ -12,7 +12,6 @@ TicTacBoard::TicTacBoard(int size)
 		for (int j = 0; j < size; j++)
 			cells[i][j] = CellType_Empty;
 }
-
 TicTacBoard::~TicTacBoard()
 {
 	for (int i = 0; i < boardsize; i++)
@@ -60,7 +59,6 @@ void TicTacBoard::Show()
 	}
 	cout << endl;
 }
-
 void TicTacBoard::SetCell()
 {
 	/*
@@ -108,7 +106,6 @@ void TicTacBoard::CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXp
 		}
 	}
 }
-
 void TicTacBoard::CheckMM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть --
 {
@@ -127,7 +124,6 @@ void TicTacBoard::CheckMM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXp
 		}
 	}
 }
-
 void TicTacBoard::CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть +-
 {
@@ -146,7 +142,6 @@ void TicTacBoard::CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXp
 		}
 	}
 }
-
 void TicTacBoard::CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
 	bool& EatOrNot, bool& EatApportunity, CellType Type) // Проверка на возможность съесть -+
 {
@@ -166,11 +161,11 @@ void TicTacBoard::CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXp
 	}
 }
 
-
 bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellType Type, bool& EatOpp) // Проверка возможности хода
 {
 	/* !!!!!!!!!!!!!!!!!!!! Внимание. Важно! Я перепутал местами xpos и ypos, поэтому теперь xpos отвечает за строки, а ypos отвечает за столбцы! !!!!!!!!!!!!!!!!!!!! */
 
+	this->Type = Type;
 	if ((xpos2 < 0) || (xpos2 > boardsize) || (ypos2 < 0) || (ypos2 > boardsize)) // если выходим за пределы доски
 		return false;
 	if (((ypos2 % 2 == 0) && (xpos2 % 2 == 0)) || ((ypos2 % 2 != 0) && (xpos2 % 2 != 0))) // если поле белое
@@ -433,7 +428,7 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 		{
 			// Проверяем нижнюю правую диагональ от шашки
 			if (diagDR == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
-				if (((xpos1 + k) < 8) && ((ypos1 + k) < 8)) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+				if (((xpos1 + k) < 8) && ((ypos1 + k) < 8)) // Делаем ограниченя в пределах квадрата
 				{
 					if (cells[xpos1 + k][ypos1 + k] == CellType_Empty) // Проверям есть ли на пути шашка
 					{
@@ -445,7 +440,7 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 				}
 			// Проверяем верхнюю левую диагональ от шашки
 			if (diagUL == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
-				if ((-1 < (xpos1 - k)) && (-1 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка (-1 < (xpos1 - n)) && (-1 < (ypos1 - n))
+				if ((-1 < (xpos1 - k)) && (-1 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата
 				{
 					if (cells[xpos1 - k][ypos1 - k] == CellType_Empty) // Проверям есть ли на пути шашка
 					{
@@ -457,7 +452,7 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 				}
 			// Проверяем нижнюю левую диагональ от шашки
 			if (diagDL == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
-				if (((xpos1 + k) < 8) && (-1 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+				if (((xpos1 + k) < 8) && (-1 < (ypos1 - k))) // Делаем ограниченя в пределах квадрата
 				{
 					if (cells[xpos1 + k][ypos1 - k] == CellType_Empty) // Проверям есть ли на пути шашка
 					{
@@ -469,7 +464,7 @@ bool TicTacBoard::CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellTyp
 				}
 			// Проверяем верхнюю правую диагональ от шашки
 			if (diagUR == false) // Если этот прарметр true, значит на пути была шашка и проверять дальше диагональ нельзя
-				if ((-1 < (xpos1 - k)) && ((ypos1 + k) < 8)) // Делаем ограниченя в пределах квадрата, в котором потенциально может быть съедаемая шашка
+				if ((-1 < (xpos1 - k)) && ((ypos1 + k) < 8)) // Делаем ограниченя в пределах квадрата
 				{
 					if (cells[xpos1 - k][ypos1 + k] == CellType_Empty) // Проверям есть ли на пути шашка
 					{
@@ -515,7 +510,7 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		cells[EatX][EatY] = CellType_Empty; // убираем съеденную шашку
 		cells[xpos2][ypos2] = type; // ставим шашку на место хода
 
-		CheckDamka(xpos2, ypos2); // Проверка шашки можетли она стать дамкой
+		CheckDamka(xpos2, ypos2); // Проверка шашки может-ли она стать дамкой
 
 		this->CheckHod = true; // для повторной проверки
 		int SaveX = xpos1;
@@ -525,4 +520,196 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		xpos2 = SaveX;
 		ypos2 = SaveY;
 	}
+}
+
+void TicTacBoard::CheckEndPP(int j, int i, int& n)
+{
+	// Проверка правой нижней клетки
+	if (cells[i + 1][j + 1] == Type || cells[i + 1][j + 1] == (Type + 2))
+		if (cells[i + 2][j + 2] == CellType_Empty)
+			n++;
+}
+void TicTacBoard::CheckEndMM(int j, int i, int& n)
+{
+	// Проверка левая верхняя клетки
+	if (cells[i - 1][j - 1] == Type || cells[i - 1][j - 1] == (Type + 2))
+		if (cells[i - 2][j - 2] == CellType_Empty)
+			n++;
+}
+void TicTacBoard::CheckEndPM(int j, int i, int& n)
+{
+	// Проверка левой нижней клетки
+	if (cells[i + 1][j - 1] == Type || cells[i + 1][j - 1] == (Type + 2))
+		if (cells[i + 2][j - 2] == CellType_Empty)
+			n++;
+}
+void TicTacBoard::CheckEndMP(int j, int i, int& n)
+{
+	// Проверка правой верхней клетки
+	if (cells[i - 1][j + 1] == Type || cells[i - 1][j + 1] == (Type + 2))
+		if (cells[i - 2][j + 2] == CellType_Empty)
+			n++;
+}
+
+bool TicTacBoard::CheckVictory()
+{
+	int n = 0; // Счетчик для проверки возможности какого-либо хода
+	// Проверка - Если шашки остались, могут ли они ходить
+	for (int i = 0; i < boardsize; i++)
+		for (int j = 0; j < boardsize; j++)
+			if (cells[i][j] != CellType_Empty) // Если клетка не пустая
+				if (cells[i][j] != Type && cells[i][j] != Type + 2) // Если шашка противоположного цвета
+				{
+					// Проверка может ли есть
+
+					// Внешний квадрат
+					if (i == 0 || j == 0 || i == 7 || j == 7)
+					{
+						if ((i == 0) && (j == 1) || (i == 1) && (j == 0)) // Две клетки в левом верхнем углу
+							CheckEndPP(j, i, n); // Проверка правой нижней клетки
+						if ((i == 6) && (j == 7) || (i == 7) && (j == 6)) // Две клетки в правом нижнем углу
+							CheckEndMM(j, i, n); // Проверка левой верхней клетки
+						if ((i == 7) && (j == 0)) // Клетка в левом нижнем углу
+							CheckEndMP(j, i, n); // Проверка правой верхней клетки
+						if ((i == 0) && (j == 7)) // Клетка в правом верхнем углу
+							CheckEndPM(j, i, n); // Проверка левой нижней клетки
+
+						if ((i == 7) && (j == 2 || j == 4)) // Нижние две клетки
+						{
+							CheckEndMP(j, i, n); // Проверка правой верхней клетки
+							CheckEndMM(j, i, n); // Проверка левой верхней клетки
+						}
+						if ((i == 0) && (j == 3 || j == 5)) // Верхние две клетки
+						{
+							CheckEndPM(j, i, n); // Проверка левой нижней клетки
+							CheckEndPP(j, i, n); // Проверка правой нижней клетки
+						}
+						if ((j == 0) && (i == 3 || i == 5)) // Левые две клетки
+						{
+							CheckEndPP(j, i, n); // Проверка правой нижней клетки
+							CheckEndMP(j, i, n); // Проверка правой верхней клетки
+						}
+						if (j == 7 && (i == 2 || i == 4)) // Правые две клетки
+						{
+							CheckEndPM(j, i, n); // Проверка левой нижней клетки
+							CheckEndMM(j, i, n); // Проверка левой верхней клетки
+						}
+					}
+					//Серединный квадрат
+					if (i == 1 || j == 1 || i == 6 || j == 6)
+					{
+						if ((i == 6) && (j == 1)) // Нижняя левая угловая клетка
+							CheckEndMP(j, i, n); // Проверка правой верхней клетки
+
+						if ((i == 1) && (j == 6)) // Верхняя правая угловая клетка 
+							CheckEndPM(j, i, n); // Проверка левой нижней клетки
+
+						if ((j == 1) && (i == 2 || i == 4)) // Левые две клетки
+						{
+							CheckEndPP(j, i, n); // Проверка правой нижней клетки
+							CheckEndMP(j, i, n); // Проверка правой верхней клетки
+						}
+						if ((j == 6) && (i == 3 || i == 5)) // Правые две клетки
+						{
+							CheckEndPM(j, i, n); // Проверка левой нижней клетки
+							CheckEndMM(j, i, n); // Проверка левой верхней клетки
+						}
+						if ((i == 1) && (j == 2 || j == 4)) // Верхние две клетки
+						{
+							CheckEndPP(j, i, n); // Проверка правой нижней клетки
+							CheckEndPM(j, i, n); // Проверка левой нижней клетки
+						}
+						if ((i == 6) && (j == 3 || j == 5)) // Нижние две клетки
+						{
+							CheckEndMP(j, i, n); // Проверка правой верхней клетки
+							CheckEndMM(j, i, n); // Проверка левой верхней клетки
+						}
+					}
+					// Центральный квадрат
+					if (((1 < i) && (i < 6)) && ((1 < j) && (j < 6)))
+					{
+						CheckEndPP(j, i, n); // Проверка правой нижней клетки
+						CheckEndMP(j, i, n); // Проверка правой верхней клетки
+						CheckEndPM(j, i, n); // Проверка левой нижней клетки
+						CheckEndMM(j, i, n); // Проверка левой верхней клетки
+					}
+
+					// Проверка обычного хода
+					if (cells[i][j] == CellType_White_King || cells[i][j] == CellType_Black_King) // Если дамка
+					{
+						// Проверяем нижнюю правую диагональ от шашки
+						if (((i + 1) < 8) && ((j + 1) < 8)) // Делаем ограниченя в пределах поля
+							if (cells[i + 1][j + 1] == CellType_Empty) // Проверям есть ли на пути шашка
+								n++;
+						// Проверяем верхнюю левую диагональ от шашки
+						if ((-1 < (i - 1)) && (-1 < (j - 1))) // Делаем ограниченя в пределах поля
+							if (cells[i - 1][j - 1] == CellType_Empty) // Проверям есть ли на пути шашка
+								n++;
+						// Проверяем нижнюю левую диагональ от шашки
+						if (((i + 1) < 8) && (-1 < (j - 1))) // Делаем ограниченя в пределах поля
+							if (cells[i + 1][j - 1] == CellType_Empty) // Проверям есть ли на пути шашка
+								n++;
+						// Проверяем верхнюю правую диагональ от шашки
+						if ((-1 < (i - 1)) && ((j + 1) < 8)) // Делаем ограниченя в пределах поля
+							if (cells[i - 1][j + 1] == CellType_Empty) // Проверям есть ли на пути шашка
+								n++;
+					}
+					else // Если обычная
+					{
+						//Проверка может ли ходить
+						if (cells[i][j] == CellType_White) // Если белая
+							if (i != 0) // Не проверяем 8 строку
+							{
+								if (j == 0) // Если шашка в 1 столбце
+									if (cells[i - 1][j + 1] == CellType_Empty)
+										n++;
+								if (j == 7) // Если шашка в 8 столбце
+									if (cells[i - 1][j - 1] == CellType_Empty)
+										n++;
+								if (0 < j && j < 7) // Если шашка в любом другом столбце
+									if (cells[i - 1][j + 1] == CellType_Empty || cells[i - 1][j - 1] == CellType_Empty)
+										n++;
+							}
+						if (cells[i][j] == CellType_Black) // Если черная
+							if (i != 7) // Не проверяем 1 строку
+							{
+								if (j == 0) // Если шашка в 1 столбце
+									if (cells[i + 1][j + 1] == CellType_Empty)
+										n++;
+								if (j == 7) // Если шашка в 8 столбце
+									if (cells[i + 1][j - 1] == CellType_Empty)
+										n++;
+								if (0 < j && j < 7) // Если шашка в любом другом столбце
+									if (cells[i + 1][j + 1] == CellType_Empty || cells[i + 1][j - 1] == CellType_Empty)
+										n++;
+							}
+					}
+				}
+	if (n == 0)
+	{
+		// Если ни одной шашки противоположного цвета нет или они не могут ходить
+		bVictory = true;
+		return true;
+	}
+
+	return false;
+}
+
+bool TicTacBoard::CheckDraw()
+{
+
+
+	return false;
+}
+
+bool TicTacBoard::CheckEndCondition()
+{
+	if (CheckVictory() || CheckDraw())
+		return true;
+
+	return false;
+}
+bool TicTacBoard::IsVictory()
+{
+	return bVictory;
 }

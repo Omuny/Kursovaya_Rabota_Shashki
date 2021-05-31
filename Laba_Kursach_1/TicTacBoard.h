@@ -6,9 +6,13 @@ class TicTacBoard
 private:
 	int boardsize;
 	CellType** cells;
+	CellType Type;
 	bool CheckHod = false;
 	int EatX;
 	int EatY;
+	bool bVictory = false;
+	bool CheckVictory();
+	bool CheckDraw();
 public:
 	TicTacBoard(int boardsize);
 	virtual ~TicTacBoard();
@@ -18,13 +22,16 @@ public:
 	void CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp);
 	void CheckDamka(int xpos2, int ypos2);
 
-	void CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
-		bool& EatOrNot,bool& EatApportunity, CellType Type); //CheckPlusPlus
-	void CheckMM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,
-		bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusMinus
-	void CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,
-		bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckPlusMinus
-	void CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,
-		bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusPlus
-};
+	void CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, bool& EatOrNot,bool& EatApportunity, CellType Type); //CheckPlusPlus
+	void CheckMM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusMinus
+	void CheckPM(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckPlusMinus
+	void CheckMP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1,bool& EatOrNot, bool& EatApportunity, CellType Type); //CheckMinusPlus
 
+	bool CheckEndCondition();
+	bool IsVictory();
+
+	void CheckEndPP(int j, int i, int& n); //CheckEndPlusPlus
+	void CheckEndMM(int j, int i, int& n); //CheckEndMinusMinus
+	void CheckEndPM(int j, int i, int& n); //CheckEndPlusMinus
+	void CheckEndMP(int j, int i, int& n); //CheckEndMinusPlus
+};
