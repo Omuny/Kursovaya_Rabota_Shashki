@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "TicTacBoard.h"
-#include "TicTacPlayer.h"
+#include "TicTacHumanPlayer.h"
 
 TicTacBoard::TicTacBoard(int size)
 {
