@@ -1,6 +1,7 @@
 #pragma once
-#include "TicTacBoard.h"
+#include "pch.h"
 #include "TicTacPlayer.h"
+#include "TicTacBoardMonteCarloEvaluator.h"
 class TicTacComputerPlayer :
     public TicTacPlayer
 {

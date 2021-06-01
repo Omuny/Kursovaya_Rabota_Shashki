@@ -165,8 +165,11 @@ int TicTacHumanPlayer::MakeMove()
 	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp)) // проверка на возможность хода
 	{
 		this->board->CellMove(row1, col1, row2, col2, EatOpp); // сам ход
-		if(EatOpp == true)
+		if (EatOpp == true)
+		{
+			this->board->Revers(row1, col1, row2, col2, EatOpp); // сам ход
 			this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp); // дополнительная проверка на возможность съесть еще одну шашку
+		}
 
 		if (EatOpp == false)
 			return 1;

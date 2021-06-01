@@ -22,12 +22,15 @@ int TicTacRandomPlayer::MakeMove()
 	{
 		this->board->CellMove(row1, col1, row2, col2, EatOpp); // сам ход
 		if (EatOpp == true)
+		{
+			this->board->Revers(row1, col1, row2, col2, EatOpp); // сам ход
 			this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp); // дополнительная проверка на возможность съесть еще одну шашку
+		}
 
 		if (EatOpp == false)
-			return 1;
+			return 1; // Ход сделан
 		if (EatOpp == true)
-			return 2;
+			return 2; // Есть возможность съесть еще
 	}
-	return 0;
+	return 0; // Не допустимый ход
 }

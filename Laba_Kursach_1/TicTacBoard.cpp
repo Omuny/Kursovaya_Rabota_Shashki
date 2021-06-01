@@ -492,7 +492,7 @@ void TicTacBoard::CheckDamka(int xpos2, int ypos2) // Проверка шакш�
 		cells[xpos2][ypos2] = CellType_Black_King;
 }
 
-void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp) // Метод реализации ходов шашки
+void TicTacBoard::CellMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp) // Метод реализации ходов шашки
 {
 	CellType type;
 
@@ -507,6 +507,7 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 	}
 	if (EatOpp == true) // если съедаем шашку
 	{
+		SaveType = cells[EatX][EatY]; // Сохраняем тип съеденной переменной
 		type = cells[xpos1][ypos1];
 		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
 		cells[EatX][EatY] = CellType_Empty; // убираем съеденную шашку
@@ -516,12 +517,35 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		CheckDamka(xpos2, ypos2); // Проверка шашки может-ли она стать дамкой
 
 		this->CheckHod = true; // для повторной проверки
-		int SaveX = xpos1;
-		int SaveY = ypos1;
-		xpos1 = xpos2;
-		ypos1 = ypos2;
-		xpos2 = SaveX;
-		ypos2 = SaveY;
+	}
+}
+
+void TicTacBoard::Revers(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool EatOpp)
+{
+	int SaveX = xpos1;
+	int SaveY = ypos1;
+	xpos1 = xpos2;
+	ypos1 = ypos2;
+	xpos2 = SaveX;
+	ypos2 = SaveY;
+}
+
+void TicTacBoard::CancelMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp)
+{
+	CellType type;
+
+	if (EatOpp == false) // если обычный ход
+	{
+		type = cells[xpos1][ypos1];
+		cells[xpos1][ypos1] = cells[xpos2][ypos2]; // убираем шашку со старого места
+		cells[xpos2][ypos2] = type; // ставим шашку на место хода
+	}
+	if (EatOpp == true) // если съедаем шашку
+	{
+		type = cells[xpos1][ypos1];
+		cells[xpos1][ypos1] = cells[xpos2][ypos2]; // убираем шашку со старого места
+		cells[EatX][EatY] = SaveType; // возвращаем съеденную шашку
+		cells[xpos2][ypos2] = type; // ставим шашку на место хода
 	}
 }
 

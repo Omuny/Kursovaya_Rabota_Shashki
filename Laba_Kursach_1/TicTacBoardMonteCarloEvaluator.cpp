@@ -1,15 +1,18 @@
 #include "TicTacBoardMonteCarloEvaluator.h"
 #include "pch.h"
 
-TicTacBoardMonteCarloEvaluator::TicTacBoardMonteCarloEvaluator(TicTacBoard* board, int numIterations, CellType startCellType, unsigned int xpos, unsigned int ypos)
+TicTacBoardMonteCarloEvaluator::TicTacBoardMonteCarloEvaluator(TicTacBoard* board, int numIterations, CellType startCellType, int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp)
 {
 	this->board = board;
 	this->numGames = numIterations;
 	this->numDraws = 0;
 	this->numVictories = 0;
 	this->numLosses = 0;
-	this->xpos = xpos;
-	this->ypos = ypos;
+	this->xpos1 = xpos1;
+	this->ypos1 = ypos1;
+	this->xpos2 = xpos2;
+	this->ypos2 = ypos2;
+	this->EatOpp = EatOpp;
 	this->startCellType = startCellType;
 }
 
@@ -47,7 +50,7 @@ void TicTacBoardMonteCarloEvaluator::EvaluateBoard()
 
 	while (!bGameFinished)
 	{
-		while (!currentPlayer->MakeMove());
+		while (currentPlayer->MakeMove() != 1);
 
 		if (b->CheckEndCondition(white, black, n, FirstCheck, SecondCheck, ThirdCheck))
 		{
