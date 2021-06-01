@@ -146,6 +146,7 @@
     <ClCompile Include="TicTacManager.cpp" />
     <ClCompile Include="TicTacHumanPlayer.cpp" />
     <ClCompile Include="TicTacPlayer.cpp" />
+    <ClCompile Include="TicTacRandomPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellType.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="TicTacManager.h" />
     <ClInclude Include="TicTacHumanPlayer.h" />
     <ClInclude Include="TicTacPlayer.h" />
+    <ClInclude Include="TicTacRandomPlayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

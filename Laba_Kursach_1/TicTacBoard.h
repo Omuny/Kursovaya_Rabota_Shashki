@@ -15,6 +15,7 @@ private:
 	bool CheckDraw(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck);
 public:
 	TicTacBoard(int boardsize);
+	TicTacBoard(TicTacBoard* board);
 	virtual ~TicTacBoard();
 	void Show();
 	void SetCell();

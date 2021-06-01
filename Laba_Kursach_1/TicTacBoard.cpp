@@ -12,6 +12,16 @@ TicTacBoard::TicTacBoard(int size)
 		for (int j = 0; j < size; j++)
 			cells[i][j] = CellType_Empty;
 }
+TicTacBoard::TicTacBoard(TicTacBoard* board)
+{
+	this->boardsize = board->boardsize;
+	cells = new CellType * [boardsize];
+	for (int i = 0; i < boardsize; i++)
+		cells[i] = new CellType[boardsize];
+	for (int i = 0; i < boardsize; i++)
+		for (int j = 0; j < boardsize; j++)
+			cells[i][j] = board->cells[i][j];
+}
 TicTacBoard::~TicTacBoard()
 {
 	for (int i = 0; i < boardsize; i++)
@@ -778,6 +788,7 @@ bool TicTacBoard::CheckDraw(int& white, int& black, int& n, int& FirstCheck, int
 
 bool TicTacBoard::CheckEndCondition(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck)
 {
+	bVictory = false;
 	if (CheckVictory() || CheckDraw(white, black, n, FirstCheck, SecondCheck, ThirdCheck))
 		return true;
 
