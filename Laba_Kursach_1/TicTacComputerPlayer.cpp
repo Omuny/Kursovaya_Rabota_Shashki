@@ -53,21 +53,27 @@ int TicTacComputerPlayer::MakeMove()
 	}
 
 	this->board->CellMove(biggestWinEvaluators[0]->GetXPos1(), biggestWinEvaluators[0]->GetYPos1(), biggestWinEvaluators[0]->GetXPos2(), biggestWinEvaluators[0]->GetYPos2(), biggestWinEvaluators[0]->GetEatOpp());
-	
-	////// Я тут сейчас
-	
-		//this->board->CellMove(row1, col1, row2, col2, EatOpp);
-		if (EatOpp == true)
-			this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp); // дополнительная проверка на возможность съесть еще одну шашку
+	int xpos1 = biggestWinEvaluators[0]->GetXPos1();
+	int ypos1 = biggestWinEvaluators[0]->GetYPos1();
+	int xpos2 = biggestWinEvaluators[0]->GetXPos2();
+	int ypos2 = biggestWinEvaluators[0]->GetYPos2();
+	this->EatOpp = biggestWinEvaluators[0]->GetEatOpp();
 
-		if (EatOpp == false)
-			return 1;
-		if (EatOpp == true)
-			return 2;
+	if (EatOpp == true)
+	{
+		this->board->Revers(xpos1, ypos1, xpos2, ypos2, this->EatOpp); // сам ход
+		this->board->CkeckLegal(xpos1, ypos1, xpos2, ypos2, this->cellType, this->EatOpp); // дополнительная проверка на возможность съесть еще одну шашку
+	}
 
 	for (auto evaluator = evaluators.begin(); evaluator != evaluators.end(); evaluator++)
 		delete(*evaluator);
 	evaluators.clear();
 	biggestWinEvaluators.clear();
+
+	if (EatOpp == false)
+		return 1;
+	if (EatOpp == true)
+		return 2;
+
 	return 0;
 }
