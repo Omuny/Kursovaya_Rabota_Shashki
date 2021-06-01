@@ -12,11 +12,18 @@ TicTacRandomPlayer::~TicTacRandomPlayer()
 int TicTacRandomPlayer::MakeMove()
 {
 	int row1, col1, row2, col2;
-	
+Tuda: // <-----
 	row1 = (int)(rand() % 8);
 	col1 = (int)(rand() % 8);
 	row2 = (int)(rand() % 8);
 	col2 = (int)(rand() % 8);
+
+	if (((col2 % 2 == 0) && (row2 % 2 == 0)) || ((col2 % 2 != 0) && (row2 % 2 != 0))) // если ходим на белую клетку
+		goto Tuda; // ---->
+	if (((col1 % 2 == 0) && (row1 % 2 == 0)) || ((col1 % 2 != 0) && (row1 % 2 != 0))) // ходим белым болем то же рандомим
+		goto Tuda; // ---->
+	if ((col1 == col2) && (row1 == row2)) // ходим на туже клетку - рандомим
+		goto Tuda; // ---->
 
 	if (this->board->CkeckLegal(row1, col1, row2, col2, cellType, EatOpp)) // проверка на возможность хода
 	{

@@ -520,6 +520,11 @@ void TicTacBoard::CellMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatO
 	}
 }
 
+void TicTacBoard::ResetCheckHod()
+{
+	this->CheckHod = false;
+}
+
 void TicTacBoard::Revers(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool EatOpp)
 {
 	int SaveX = xpos1;

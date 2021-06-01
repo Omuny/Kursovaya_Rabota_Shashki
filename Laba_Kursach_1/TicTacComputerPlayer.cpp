@@ -19,7 +19,8 @@ int TicTacComputerPlayer::MakeMove()
 					if (this->board->CkeckLegal(xpos1, ypos1, xpos2, ypos2, this->cellType, this->EatOpp))
 					{
 						this->board->CellMove(xpos1, ypos1, xpos2, ypos2, this->EatOpp);
-						evaluators.push_back(new TicTacBoardMonteCarloEvaluator(this->board, 1000, (this->cellType == CellType_White) ? CellType_Black : CellType_White, xpos1, ypos1, xpos2, ypos2, this->EatOpp));
+						this->board->ResetCheckHod(); // Обнуляем переменную для корректной работы
+						evaluators.push_back(new TicTacBoardMonteCarloEvaluator(this->board, 10, (this->cellType == CellType_White) ? CellType_Black : CellType_White, xpos1, ypos1, xpos2, ypos2, this->EatOpp));
 						this->board->CancelMove(xpos1, ypos1, xpos2, ypos2, this->EatOpp); // Отменяем все изменения
 					}
 
@@ -49,15 +50,18 @@ int TicTacComputerPlayer::MakeMove()
 		else
 			numVictories = (*evaluator)->GetLosses();
 		if (numVictories == biggestVictories)
+		{
 			biggestWinEvaluators.push_back((*evaluator));
+			break;
+		}
 	}
-
-	this->board->CellMove(biggestWinEvaluators[0]->GetXPos1(), biggestWinEvaluators[0]->GetYPos1(), biggestWinEvaluators[0]->GetXPos2(), biggestWinEvaluators[0]->GetYPos2(), biggestWinEvaluators[0]->GetEatOpp());
 	int xpos1 = biggestWinEvaluators[0]->GetXPos1();
 	int ypos1 = biggestWinEvaluators[0]->GetYPos1();
 	int xpos2 = biggestWinEvaluators[0]->GetXPos2();
 	int ypos2 = biggestWinEvaluators[0]->GetYPos2();
 	this->EatOpp = biggestWinEvaluators[0]->GetEatOpp();
+
+	this->board->CellMove(xpos1, ypos1, xpos2, ypos2, this->EatOpp);
 
 	if (EatOpp == true)
 	{

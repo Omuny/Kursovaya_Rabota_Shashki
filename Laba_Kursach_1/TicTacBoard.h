@@ -23,6 +23,7 @@ public:
 	void SetCell();
 	bool CkeckLegal(int xpos1, int ypos1, int xpos2, int ypos2, CellType Type, bool& EatOpp);
 	void CellMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp);
+	void ResetCheckHod();
 	void Revers(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool EatOpp);
 	void CancelMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp);
 	void CheckDamka(int xpos2, int ypos2);
