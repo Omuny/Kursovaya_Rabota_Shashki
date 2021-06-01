@@ -63,6 +63,9 @@ void TicTacManager::MakeMove(int& white, int& black, int& n, int& FirstCheck, in
 	int possible;
 
 	ShowBoard();
+	cout << "\tНажмите любую клавишу для продолжения" << endl;
+	_getch(); // Данная строка необходима, чтобы при игре компьютера с компьтером видить доску перед каждым ходом
+	cout << "\tХод обрабатывается" << endl;
 	Here: // Лейбл для перехода <---
 	possible = currentPlayer->MakeMove();
 	system("cls");
