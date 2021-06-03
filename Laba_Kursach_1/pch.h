@@ -9,5 +9,7 @@ using namespace std;
 #include <string>
 #include <locale.h>
 #include <cmath>
+#include <vector>
+#include <sstream>
 
 #endif //PCH_H

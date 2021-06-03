@@ -1,20 +1,21 @@
 #pragma once
 #include"TicTacBoard.h"
-
+#include"pch.h"
 class TicTacPlayer
 {
-private:
+protected:
 	TicTacBoard* board;
 	CellType cellType;
 	string name;
+	RenderWindow* window;
 	bool EatOpp = false;
 public:
 	TicTacPlayer();
 	virtual ~TicTacPlayer();
 	void SetupPlayer(string name, CellType cellType);
 	void SetBoard(TicTacBoard* board);
-	int MakeMove();
+	virtual int MakeMove() = 0;
 	string GetName();
+	void SetWindow(RenderWindow* window);
 };
-
 

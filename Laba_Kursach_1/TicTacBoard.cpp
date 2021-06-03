@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "TicTacBoard.h"
-#include "TicTacPlayer.h"
+#include "TicTacHumanPlayer.h"
 
 TicTacBoard::TicTacBoard(int size)
 {
@@ -12,6 +12,16 @@ TicTacBoard::TicTacBoard(int size)
 		for (int j = 0; j < size; j++)
 			cells[i][j] = CellType_Empty;
 }
+TicTacBoard::TicTacBoard(TicTacBoard* board)
+{
+	this->boardsize = board->boardsize;
+	cells = new CellType * [boardsize];
+	for (int i = 0; i < boardsize; i++)
+		cells[i] = new CellType[boardsize];
+	for (int i = 0; i < boardsize; i++)
+		for (int j = 0; j < boardsize; j++)
+			cells[i][j] = board->cells[i][j];
+}
 TicTacBoard::~TicTacBoard()
 {
 	for (int i = 0; i < boardsize; i++)
@@ -19,45 +29,52 @@ TicTacBoard::~TicTacBoard()
 	delete[]cells;
 }
 
-void TicTacBoard::Show()
+void TicTacBoard::Show(RenderWindow& window)
 {
-	cout << endl;
-	cout << "     ";
-	cout << " A B C D E F G H\tW - Белая шашка, B - черная. V - Белая дамка, P - черная. ";
-	cout << endl;
-	cout << endl;
+	Texture TextureBoard1, TextureCheckers;
+	Sprite Board1, CheckerW, CheckerB, CheckerWK, CheckerBK;
+	TextureBoard1.loadFromFile("images/Chess-board.jpg");
+	TextureCheckers.loadFromFile("images/Сheckers.png");
+	Board1.setTexture(TextureBoard1);
+	Board1.setPosition(0, 50);
+
+	CheckerW.setTexture(TextureCheckers);
+	CheckerB.setTexture(TextureCheckers);
+	CheckerWK.setTexture(TextureCheckers);
+	CheckerBK.setTexture(TextureCheckers);
+	CheckerB.setTextureRect(IntRect(0, 0, 61, 61));
+	CheckerW.setTextureRect(IntRect(0, 61, 61, 61));
+	CheckerWK.setTextureRect(IntRect(61, 0, 61, 61));
+	CheckerBK.setTextureRect(IntRect(61, 61, 61, 61));
+
+	window.draw(Board1);
 
 	for (int i = 0; i < boardsize; i++)
 	{
-		cout << 8-i << "    |";
 		for (int j = 0; j < boardsize; j++)
 		{
 			switch (cells[i][j])
 			{
 			case CellType_White:
-				cout << "W"; // Белая шашка
+				CheckerW.setPosition(63 + j * 63, 114 + i * 63);
+				window.draw(CheckerW);
 				break;
 			case CellType_Black:
-				cout << "B"; // Черная шашка
+				CheckerB.setPosition(63 + j * 63, 114 + i * 63);
+				window.draw(CheckerB);
 				break;
 			case CellType_White_King:
-				cout << "V"; // Белая дамка
+				CheckerWK.setPosition(63 + j * 63, 114 + i * 63);
+				window.draw(CheckerWK);
 				break;
 			case CellType_Black_King:
-				cout << "P"; // Черная дамка
-				break;
-			case CellType_Empty:
-				if (((i % 2 ==0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0)))
-					cout << "-"; // Пустая белая клетка
-				else
-					cout << " "; // Пустая черная клетка
+				CheckerBK.setPosition(63 + j * 63, 114 + i * 63);
+				window.draw(CheckerBK);
 				break;
 			}
-			cout << "|";
 		}
-		cout << endl;
 	}
-	cout << endl;
+	window.display();
 }
 void TicTacBoard::SetCell()
 {
@@ -77,6 +94,12 @@ void TicTacBoard::SetCell()
 			if (i == 7 && j % 2 == 0)
 				cells[i][j] = CellType_White;
 		}
+	/*
+	CellType_White, // Белая шашка
+	CellType_Black, // Черная шашка
+	CellType_White_King, // Белая дамка
+	CellType_Black_King // Черная дамка
+	*/
 }
 
 void TicTacBoard::CheckPP(int ypos1, int xpos1, int xpos2, int ypos2, int SaveXpos1, int SaveYpos1, 
@@ -482,7 +505,7 @@ void TicTacBoard::CheckDamka(int xpos2, int ypos2) // Проверка шакш�
 		cells[xpos2][ypos2] = CellType_Black_King;
 }
 
-void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool& EatOpp) // Метод реализации ходов шашки
+void TicTacBoard::CellMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp) // Метод реализации ходов шашки
 {
 	CellType type;
 
@@ -497,6 +520,7 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 	}
 	if (EatOpp == true) // если съедаем шашку
 	{
+		SaveType = cells[EatX][EatY]; // Сохраняем тип съеденной переменной
 		type = cells[xpos1][ypos1];
 		cells[xpos1][ypos1] = CellType_Empty; // убираем шашку со старого места
 		cells[EatX][EatY] = CellType_Empty; // убираем съеденную шашку
@@ -506,12 +530,40 @@ void TicTacBoard::CellMove(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool&
 		CheckDamka(xpos2, ypos2); // Проверка шашки может-ли она стать дамкой
 
 		this->CheckHod = true; // для повторной проверки
-		int SaveX = xpos1;
-		int SaveY = ypos1;
-		xpos1 = xpos2;
-		ypos1 = ypos2;
-		xpos2 = SaveX;
-		ypos2 = SaveY;
+	}
+}
+
+void TicTacBoard::ResetCheckHod()
+{
+	this->CheckHod = false;
+}
+
+void TicTacBoard::Revers(int& xpos1, int& ypos1, int& xpos2, int& ypos2, bool EatOpp)
+{
+	int SaveX = xpos1;
+	int SaveY = ypos1;
+	xpos1 = xpos2;
+	ypos1 = ypos2;
+	xpos2 = SaveX;
+	ypos2 = SaveY;
+}
+
+void TicTacBoard::CancelMove(int xpos1, int ypos1, int xpos2, int ypos2, bool EatOpp)
+{
+	CellType type;
+
+	if (EatOpp == false) // если обычный ход
+	{
+		type = cells[xpos1][ypos1];
+		cells[xpos1][ypos1] = cells[xpos2][ypos2]; // убираем шашку со старого места
+		cells[xpos2][ypos2] = type; // ставим шашку на место хода
+	}
+	if (EatOpp == true) // если съедаем шашку
+	{
+		type = cells[xpos1][ypos1];
+		cells[xpos1][ypos1] = cells[xpos2][ypos2]; // убираем шашку со старого места
+		cells[EatX][EatY] = SaveType; // возвращаем съеденную шашку
+		cells[xpos2][ypos2] = type; // ставим шашку на место хода
 	}
 }
 
@@ -778,12 +830,14 @@ bool TicTacBoard::CheckDraw(int& white, int& black, int& n, int& FirstCheck, int
 
 bool TicTacBoard::CheckEndCondition(int& white, int& black, int& n, int& FirstCheck, int& SecondCheck, int& ThirdCheck)
 {
+	bVictory = false;
 	if (CheckVictory() || CheckDraw(white, black, n, FirstCheck, SecondCheck, ThirdCheck))
 		return true;
 
 	return false;
 }
-bool TicTacBoard::IsVictory()
+bool TicTacBoard::IsVictory(CellType& Type)
 {
+	Type = this->Type;
 	return bVictory;
 }
