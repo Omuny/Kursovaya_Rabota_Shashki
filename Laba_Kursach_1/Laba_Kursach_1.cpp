@@ -8,7 +8,7 @@
 using namespace sf;
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(626, 676), "Lesson 2. kychka-pc.ru");
+	sf::RenderWindow window(sf::VideoMode(626, 676), "Shashky_8x8");
 	sf::Event event;
 
 	setlocale(LC_ALL, "Russian");
